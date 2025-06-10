@@ -27,8 +27,8 @@ export function LoginPage() {
       const success = await login(email, password, userType);
       if (success) {
         toast({
-          title: "ログイン成功",
-          description: "正常にログインしました。",
+          title: "เข้าสู่ระบบสำเร็จ",
+          description: "เข้าสู่ระบบเรียบร้อยแล้ว",
         });
         
         // Redirect based on user type
@@ -41,15 +41,15 @@ export function LoginPage() {
         }
       } else {
         toast({
-          title: "ログインエラー",
-          description: "メールアドレスまたはパスワードが間違っています。",
+          title: "เข้าสู่ระบบล้มเหลว",
+          description: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "エラー",
-        description: "ログイン中にエラーが発生しました。",
+        title: "เกิดข้อผิดพลาด",
+        description: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
         variant: "destructive",
       });
     } finally {
@@ -61,27 +61,27 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">ログイン</CardTitle>
-          <p className="text-gray-600">アカウントにログインしてください</p>
+          <CardTitle className="text-2xl font-bold text-gray-900">เข้าสู่ระบบ</CardTitle>
+          <p className="text-gray-600">กรุณาเข้าสู่ระบบบัญชีของคุณ</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="userType">ユーザータイプ</Label>
+              <Label htmlFor="userType">ประเภทผู้ใช้</Label>
               <Select value={userType} onValueChange={(value: UserType) => setUserType(value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="general">一般ユーザー</SelectItem>
-                  <SelectItem value="organizer">オーガナイザー</SelectItem>
-                  <SelectItem value="admin">グローバル管理者</SelectItem>
+                  <SelectItem value="general">ผู้ใช้ทั่วไป</SelectItem>
+                  <SelectItem value="organizer">ผู้จัดการ</SelectItem>
+                  <SelectItem value="admin">ผู้ดูแลระบบ</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="email">メールアドレス</Label>
+              <Label htmlFor="email">อีเมล</Label>
               <Input
                 id="email"
                 type="email"
@@ -93,13 +93,13 @@ export function LoginPage() {
             </div>
 
             <div>
-              <Label htmlFor="password">パスワード</Label>
+              <Label htmlFor="password">รหัสผ่าน</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="パスワードを入力"
+                placeholder="กรอกรหัสผ่าน"
                 required
               />
             </div>
@@ -109,17 +109,17 @@ export function LoginPage() {
               className="w-full bg-green-500 hover:bg-green-600"
               disabled={isLoading}
             >
-              {isLoading ? 'ログイン中...' : 'ログイン'}
+              {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
             </Button>
           </form>
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium text-sm text-gray-700 mb-2">テスト用アカウント:</h4>
+            <h4 className="font-medium text-sm text-gray-700 mb-2">บัญชีทดสอบ:</h4>
             <div className="text-xs text-gray-600 space-y-1">
-              <div>オーガナイザー: tanaka@example.com</div>
-              <div>管理者: admin@example.com</div>
-              <div>一般ユーザー: yamada@example.com</div>
-              <div className="font-medium">パスワード: 任意</div>
+              <div>ผู้จัดการ: tanaka@example.com</div>
+              <div>ผู้ดูแลระบบ: admin@example.com</div>
+              <div>ผู้ใช้ทั่วไป: yamada@example.com</div>
+              <div className="font-medium">รหัสผ่าน: อะไรก็ได้</div>
             </div>
           </div>
         </CardContent>

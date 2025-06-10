@@ -25,20 +25,20 @@ export function Layout() {
     <>
       <Link to="/" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
         <Home className="w-5 h-5" />
-        <span>ホーム</span>
+        <span>หน้าแรก</span>
       </Link>
       
       {user?.type === 'organizer' && (
         <Link to="/organizer" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
           <Settings className="w-5 h-5" />
-          <span>管理画面</span>
+          <span>หน้าจัดการ</span>
         </Link>
       )}
       
       {user?.type === 'admin' && (
         <Link to="/admin" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
           <Settings className="w-5 h-5" />
-          <span>管理画面</span>
+          <span>หน้าจัดการ</span>
         </Link>
       )}
     </>
@@ -53,7 +53,7 @@ export function Layout() {
               <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">LINE</span>
               </div>
-              <span className="font-bold text-xl text-gray-900">OA検索</span>
+              <span className="font-bold text-xl text-gray-900">ค้นหา OA</span>
             </Link>
 
             {isMobile ? (
@@ -74,13 +74,13 @@ export function Layout() {
                         </div>
                         <Button onClick={handleLogout} variant="ghost" className="w-full justify-start">
                           <LogOut className="w-4 h-4 mr-2" />
-                          ログアウト
+                          ออกจากระบบ
                         </Button>
                       </div>
                     ) : (
                       <Link to="/login">
                         <Button className="w-full bg-green-500 hover:bg-green-600">
-                          ログイン
+                          เข้าสู่ระบบ
                         </Button>
                       </Link>
                     )}
@@ -106,7 +106,7 @@ export function Layout() {
                 ) : (
                   <Link to="/login">
                     <Button className="bg-green-500 hover:bg-green-600">
-                      ログイン
+                      เข้าสู่ระบบ
                     </Button>
                   </Link>
                 )}

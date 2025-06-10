@@ -9,7 +9,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export function SearchBar({ onSearch, onLocationSearch, placeholder = "LINE公式アカウントを検索..." }: SearchBarProps) {
+export function SearchBar({ onSearch, onLocationSearch, placeholder = "ค้นหาบัญชี LINE Official..." }: SearchBarProps) {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -44,7 +44,7 @@ export function SearchBar({ onSearch, onLocationSearch, placeholder = "LINE公�
             type="submit" 
             className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-2"
           >
-            検索
+            ค้นหา
           </Button>
         </div>
       </form>

@@ -51,23 +51,23 @@ export function HomePage() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           toast({
-            title: "位置情報を取得しました",
-            description: "近くのLINE公式アカウントを検索中...",
+            title: "ได้รับข้อมูลตำแหน่งแล้ว",
+            description: "กำลังค้นหาบัญชี LINE Official ใกล้เคียง...",
           });
           // Here you would filter by location
         },
         (error) => {
           toast({
-            title: "位置情報取得エラー",
-            description: "位置情報の取得に失敗しました。",
+            title: "ไม่สามารถหาตำแหน่งได้",
+            description: "ไม่สามารถหาข้อมูลตำแหน่งได้",
             variant: "destructive",
           });
         }
       );
     } else {
       toast({
-        title: "位置情報未対応",
-        description: "お使いのブラウザは位置情報に対応していません。",
+        title: "เบราว์เซอร์ไม่รองรับ",
+        description: "เบราว์เซอร์ของคุณไม่รองรับการหาตำแหน่ง",
         variant: "destructive",
       });
     }
@@ -95,12 +95,12 @@ export function HomePage() {
       <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            LINE公式アカウント
+            เครื่องมือค้นหา
             <br />
-            <span className="text-yellow-300">検索エンジン</span>
+            <span className="text-yellow-300">บัญชี LINE Official</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-green-100">
-            あなたにぴったりのLINE公式アカウントを見つけよう
+            ค้นหาบัญชี LINE Official ที่เหมาะสมกับคุณ
           </p>
           <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
         </div>
@@ -113,9 +113,9 @@ export function HomePage() {
             <section className="mb-16">
               <div className="flex items-center gap-3 mb-8">
                 <Sparkles className="w-6 h-6 text-orange-500" />
-                <h2 className="text-3xl font-bold text-gray-900">プロモーション</h2>
+                <h2 className="text-3xl font-bold text-gray-900">โปรโมชั่น</h2>
                 <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                  おすすめ
+                  แนะนำ
                 </Badge>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -135,9 +135,9 @@ export function HomePage() {
             <section className="mb-16">
               <div className="flex items-center gap-3 mb-8">
                 <TrendingUp className="w-6 h-6 text-red-500" />
-                <h2 className="text-3xl font-bold text-gray-900">人気アカウント</h2>
+                <h2 className="text-3xl font-bold text-gray-900">บัญชียอดนิยม</h2>
                 <Badge variant="secondary" className="bg-red-100 text-red-700">
-                  トレンド
+                  ยอดนิยม
                 </Badge>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -157,7 +157,7 @@ export function HomePage() {
             <section>
               <div className="flex items-center gap-3 mb-8">
                 <Star className="w-6 h-6 text-blue-500" />
-                <h2 className="text-3xl font-bold text-gray-900">カテゴリ別</h2>
+                <h2 className="text-3xl font-bold text-gray-900">หมวดหมู่</h2>
               </div>
               <CategoryFilter
                 selectedCategory={selectedCategory}
@@ -172,11 +172,11 @@ export function HomePage() {
           <section>
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                {searchQuery ? `"${searchQuery}" の検索結果` : 
-                 selectedCategory ? `${getCategoryInfo(selectedCategory)?.name} のアカウント` : 
-                 'すべてのアカウント'}
+                {searchQuery ? `ผลการค้นหา "${searchQuery}"` : 
+                 selectedCategory ? `บัญชีในหมวด ${getCategoryInfo(selectedCategory)?.name}` : 
+                 'บัญชีทั้งหมด'}
               </h2>
-              <p className="text-gray-600">{filteredAccounts.length}件のアカウントが見つかりました</p>
+              <p className="text-gray-600">พบ {filteredAccounts.length} บัญชี</p>
             </div>
             
             <CategoryFilter
@@ -199,8 +199,8 @@ export function HomePage() {
             {filteredAccounts.length === 0 && (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">検索結果が見つかりません</h3>
-                <p className="text-gray-600">別のキーワードで検索してみてください</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">ไม่พบผลการค้นหา</h3>
+                <p className="text-gray-600">ลองค้นหาด้วยคำอื่น</p>
               </div>
             )}
           </section>

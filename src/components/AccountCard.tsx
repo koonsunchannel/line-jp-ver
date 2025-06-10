@@ -31,7 +31,7 @@ export function AccountCard({ account, onClick, onFavorite, isFavorited }: Accou
         />
         {account.isPromoted && (
           <Badge className="absolute top-3 left-3 bg-orange-500 text-white">
-            プロモーション
+            โปรโมชั่น
           </Badge>
         )}
         {onFavorite && (
@@ -77,7 +77,7 @@ export function AccountCard({ account, onClick, onFavorite, isFavorited }: Accou
         </div>
 
         <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg">
-          友だち追加
+          เพิ่มเพื่อน
         </Button>
       </div>
     </div>

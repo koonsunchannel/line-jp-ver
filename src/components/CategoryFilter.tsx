@@ -18,7 +18,7 @@ export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryF
             : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
         }`}
       >
-        すべて
+        ทั้งหมด
       </button>
       {categories.map((category) => (
         <button

@@ -16,8 +16,8 @@ export function AccountDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">アカウントが見つかりません</h1>
-          <Button onClick={() => navigate('/')}>ホームに戻る</Button>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">ไม่พบบัญชี</h1>
+          <Button onClick={() => navigate('/')}>กลับสู่หน้าแรก</Button>
         </div>
       </div>
     );
@@ -39,7 +39,7 @@ export function AccountDetailPage() {
           className="mb-6 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          戻る
+          กลับ
         </Button>
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -54,7 +54,7 @@ export function AccountDetailPage() {
             
             {account.isPromoted && (
               <Badge className="absolute top-4 left-4 bg-orange-500 text-white">
-                プロモーション
+                โปรโมชั่น
               </Badge>
             )}
 
@@ -72,7 +72,7 @@ export function AccountDetailPage() {
                 </div>
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  <span>{account.followers.toLocaleString()}人</span>
+                  <span>{account.followers.toLocaleString()} คน</span>
                 </div>
               </div>
             </div>
@@ -84,13 +84,13 @@ export function AccountDetailPage() {
               <div className="lg:col-span-2">
                 {/* Description */}
                 <section className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">アカウント紹介</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">แนะนำบัญชี</h2>
                   <p className="text-gray-700 leading-relaxed">{account.description}</p>
                 </section>
 
                 {/* Tags */}
                 <section className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">タグ</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">แท็ก</h3>
                   <div className="flex flex-wrap gap-2">
                     {account.tags.map((tag) => (
                       <Badge key={tag} variant="outline">
@@ -103,7 +103,7 @@ export function AccountDetailPage() {
                 {/* Location */}
                 {account.location && (
                   <section className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">所在地</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">ที่ตั้ง</h3>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                       <MapPin className="w-5 h-5 text-gray-600 mt-0.5" />
                       <div>
@@ -113,7 +113,7 @@ export function AccountDetailPage() {
                           className="p-0 h-auto text-sm text-blue-600"
                           onClick={() => window.open(`https://maps.google.com/?q=${account.location?.lat},${account.location?.lng}`, '_blank')}
                         >
-                          Google マップで開く <ExternalLink className="w-3 h-3 ml-1" />
+                          เปิดใน Google Maps <ExternalLink className="w-3 h-3 ml-1" />
                         </Button>
                       </div>
                     </div>
@@ -125,34 +125,34 @@ export function AccountDetailPage() {
                 {/* Stats */}
                 <Card className="mb-6">
                   <CardHeader>
-                    <CardTitle className="text-lg">統計情報</CardTitle>
+                    <CardTitle className="text-lg">สถิติ</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Eye className="w-4 h-4 text-gray-600" />
-                        <span className="text-sm text-gray-600">閲覧数</span>
+                        <span className="text-sm text-gray-600">การดู</span>
                       </div>
                       <span className="font-semibold">{account.views.toLocaleString()}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <UserPlus className="w-4 h-4 text-gray-600" />
-                        <span className="text-sm text-gray-600">友だち追加</span>
+                        <span className="text-sm text-gray-600">เพิ่มเพื่อน</span>
                       </div>
                       <span className="font-semibold">{account.friendAdds.toLocaleString()}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-gray-600" />
-                        <span className="text-sm text-gray-600">フォロワー</span>
+                        <span className="text-sm text-gray-600">ผู้ติดตาม</span>
                       </div>
                       <span className="font-semibold">{account.followers.toLocaleString()}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Star className="w-4 h-4 text-yellow-400" />
-                        <span className="text-sm text-gray-600">評価</span>
+                        <span className="text-sm text-gray-600">คะแนน</span>
                       </div>
                       <span className="font-semibold">{account.rating}/5.0</span>
                     </div>
@@ -162,7 +162,7 @@ export function AccountDetailPage() {
                 {/* QR Code */}
                 <Card className="mb-6">
                   <CardHeader>
-                    <CardTitle className="text-lg">QRコード</CardTitle>
+                    <CardTitle className="text-lg">QR Code</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-4">
@@ -173,7 +173,7 @@ export function AccountDetailPage() {
                       />
                     </div>
                     <p className="text-xs text-gray-600 text-center">
-                      LINEアプリでQRコードを読み取って友だち追加
+                      สแกน QR Code ด้วยแอป LINE เพื่อเพิ่มเพื่อน
                     </p>
                   </CardContent>
                 </Card>
@@ -183,7 +183,7 @@ export function AccountDetailPage() {
                   onClick={handleAddFriend}
                   className="w-full bg-green-500 hover:bg-green-600 text-white py-6 text-lg font-semibold"
                 >
-                  友だち追加
+                  เพิ่มเพื่อน
                 </Button>
               </div>
             </div>
