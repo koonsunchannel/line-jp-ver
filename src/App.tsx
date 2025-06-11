@@ -9,6 +9,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { FavoritesPage } from "./pages/FavoritesPage";
 import { AccountDetailPage } from "./pages/AccountDetailPage";
 import { OrganizerDashboard } from "./pages/OrganizerDashboard";
 import { AdminDashboard } from "./pages/AdminDashboard";
@@ -28,6 +30,8 @@ const App = () => (
               <Route path="/login" element={<LoginPage />} />
               <Route path="/" element={<Layout />}>
                 <Route index element={<HomePage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="favorites" element={<FavoritesPage />} />
                 <Route path="account/:id" element={<AccountDetailPage />} />
                 <Route path="organizer" element={<OrganizerDashboard />} />
                 <Route path="admin" element={<AdminDashboard />} />

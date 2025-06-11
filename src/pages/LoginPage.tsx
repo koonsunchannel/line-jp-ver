@@ -9,15 +9,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '../context/LanguageContext';
+import { UserRegistrationForm } from '../components/UserRegistrationForm';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState<UserType>('general');
   const [isLoading, setIsLoading] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +31,8 @@ export function LoginPage() {
       const success = await login(email, password, userType);
       if (success) {
         toast({
-          title: "เข้าสู่ระบบสำเร็จ",
-          description: "เข้าสู่ระบบเรียบร้อยแล้ว",
+          title: t('auth.login.success'),
+          description: t('auth.login.success.description'),
         });
         
         // Redirect based on user type
@@ -41,15 +45,15 @@ export function LoginPage() {
         }
       } else {
         toast({
-          title: "เข้าสู่ระบบล้มเหลว",
-          description: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+          title: t('auth.login.failed'),
+          description: t('auth.login.failed.description'),
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "เกิดข้อผิดพลาด",
-        description: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+        title: t('auth.error'),
+        description: t('auth.error.description'),
         variant: "destructive",
       });
     } finally {
@@ -57,31 +61,41 @@ export function LoginPage() {
     }
   };
 
+  const handleRegistrationSuccess = (userData: any) => {
+    toast({
+      title: t('auth.register.success'),
+      description: t('auth.register.success.description'),
+    });
+    setShowRegistration(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">เข้าสู่ระบบ</CardTitle>
-          <p className="text-gray-600">กรุณาเข้าสู่ระบบบัญชีของคุณ</p>
+          <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
+            {t('auth.login.title')}
+          </CardTitle>
+          <p className="text-sm sm:text-base text-gray-600">{t('auth.login.description')}</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="userType">ประเภทผู้ใช้</Label>
+              <Label htmlFor="userType" className="text-sm sm:text-base">{t('auth.user.type')}</Label>
               <Select value={userType} onValueChange={(value: UserType) => setUserType(value)}>
-                <SelectTrigger>
+                <SelectTrigger className="text-sm sm:text-base">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="general">ผู้ใช้ทั่วไป</SelectItem>
-                  <SelectItem value="organizer">ผู้จัดการ</SelectItem>
-                  <SelectItem value="admin">ผู้ดูแลระบบ</SelectItem>
+                <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                  <SelectItem value="general">{t('auth.user.type.user')}</SelectItem>
+                  <SelectItem value="organizer">{t('auth.user.type.organizer')}</SelectItem>
+                  <SelectItem value="admin">{t('auth.user.type.admin')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="email">อีเมล</Label>
+              <Label htmlFor="email" className="text-sm sm:text-base">{t('auth.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -89,41 +103,60 @@ export function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
+                className="text-sm sm:text-base"
               />
             </div>
 
             <div>
-              <Label htmlFor="password">รหัสผ่าน</Label>
+              <Label htmlFor="password" className="text-sm sm:text-base">{t('auth.password')}</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="กรอกรหัสผ่าน"
+                placeholder={t('auth.password.placeholder')}
                 required
+                className="text-sm sm:text-base"
               />
             </div>
 
             <Button 
               type="submit" 
-              className="w-full bg-green-500 hover:bg-green-600"
+              className="w-full bg-green-500 hover:bg-green-600 text-sm sm:text-base"
               disabled={isLoading}
             >
-              {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+              {isLoading ? t('auth.login.loading') : t('auth.login.button')}
             </Button>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium text-sm text-gray-700 mb-2">บัญชีทดสอบ:</h4>
+          <div className="mt-4">
+            <Button 
+              type="button"
+              variant="outline"
+              className="w-full text-sm sm:text-base"
+              onClick={() => setShowRegistration(true)}
+            >
+              {t('auth.register.button')}
+            </Button>
+          </div>
+
+          <div className="mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-medium text-xs sm:text-sm text-gray-700 mb-2">{t('auth.test.accounts')}</h4>
             <div className="text-xs text-gray-600 space-y-1">
-              <div>ผู้จัดการ: tanaka@example.com</div>
-              <div>ผู้ดูแลระบบ: admin@example.com</div>
-              <div>ผู้ใช้ทั่วไป: yamada@example.com</div>
-              <div className="font-medium">รหัสผ่าน: อะไรก็ได้</div>
+              <div>{t('auth.organizer')}: tanaka@example.com</div>
+              <div>{t('auth.admin')}: admin@example.com</div>
+              <div>{t('auth.general')}: yamada@example.com</div>
+              <div className="font-medium">{t('auth.password.any')}</div>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <UserRegistrationForm
+        isOpen={showRegistration}
+        onClose={() => setShowRegistration(false)}
+        onSuccess={handleRegistrationSuccess}
+      />
     </div>
   );
 }

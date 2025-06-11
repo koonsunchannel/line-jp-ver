@@ -1,0 +1,25 @@
+
+export const categories = [
+  { id: 'expert', icon: '👨‍⚕️' },
+  { id: 'restaurant', icon: '🍽️' },
+  { id: 'transportation', icon: '🚗' },
+  { id: 'realestate', icon: '🏠' },
+  { id: 'education', icon: '📚' },
+  { id: 'travel', icon: '✈️' },
+  { id: 'entertainment', icon: '🎬' },
+  { id: 'health', icon: '🏥' },
+  { id: 'beauty', icon: '💄' },
+  { id: 'organization', icon: '🏢' },
+  { id: 'government', icon: '🏛️' },
+  { id: 'service', icon: '⚙️' },
+  { id: 'retail', icon: '🛍️' },
+  { id: 'localbusiness', icon: '🏪' },
+  { id: 'corporate', icon: '🏢' },
+  { id: 'brand', icon: '🏷️' },
+  { id: 'media', icon: '📰' },
+  { id: 'movie', icon: '🎬' },
+  { id: 'music', icon: '🎵' },
+  { id: 'sports', icon: '⚽' },
+  { id: 'tv', icon: '📺' },
+  { id: 'website', icon: '🌐' }
+];
