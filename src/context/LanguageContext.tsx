@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type Language = 'th' | 'en' | 'jp';
@@ -50,6 +49,8 @@ const translations = {
     'home.promoted.badge': 'แนะนำ',
     'home.popular.title': 'บัญชียอดนิยม',
     'home.popular.badge': 'ยอดนิยม',
+    'home.all.accounts.title': 'บัญชี LINE Official ทั้งหมด',
+    'home.all.accounts.badge': 'ทั้งหมด',
     'home.categories.title': 'หมวดหมู่',
     'home.search.results': 'ผลการค้นหา',
     'home.category.results': 'บัญชีในหมวด',
@@ -58,6 +59,35 @@ const translations = {
     'home.no.results.title': 'ไม่พบผลการค้นหา',
     'home.no.results.description': 'ลองค้นหาด้วยคำอื่น',
     
+    // Authentication
+    'auth.register.title': 'สมัครสมาชิก',
+    'auth.register.button': 'สมัครสมาชิก',
+    'auth.register.success': 'สมัครสมาชิกสำเร็จ',
+    'auth.register.success.description': 'ยินดีต้อนรับเข้าสู่ระบบ',
+    'auth.name': 'ชื่อ',
+    'auth.email': 'อีเมล',
+    'auth.password': 'รหัสผ่าน',
+    'auth.confirm.password': 'ยืนยันรหัสผ่าน',
+    'auth.user.type': 'ประเภทผู้ใช้',
+    'auth.user.type.user': 'ผู้ใช้ทั่วไป',
+    'auth.user.type.organizer': 'ผู้จัดการ',
+    'auth.cancel': 'ยกเลิก',
+    'auth.error.password.mismatch': 'รหัสผ่านไม่ตรงกัน',
+    'auth.error.password.mismatch.description': 'กรุณาตรวจสอบรหัสผ่านให้ตรงกัน',
+    
+    // Reviews
+    'review.title': 'เขียนรีวิว',
+    'review.rating': 'คะแนน',
+    'review.comment': 'ความคิดเห็น',
+    'review.comment.placeholder': 'แบ่งปันประสบการณ์ของคุณ...',
+    'review.submit': 'ส่งรีวิว',
+    'review.submit.success': 'ส่งรีวิวสำเร็จ',
+    'review.submit.success.description': 'ขอบคุณสำหรับรีวิวของคุณ',
+    'review.error.login.required': 'ต้องเข้าสู่ระบบ',
+    'review.error.login.required.description': 'กรุณาเข้าสู่ระบบเพื่อเขียนรีวิว',
+    'review.error.rating.required': 'ต้องให้คะแนน',
+    'review.error.rating.required.description': 'กรุณาให้คะแนนก่อนส่งรีวิว',
+
     // Manager
     'manager.title': 'แดชบอร์ดผู้จัดการ',
     'manager.description': 'การจัดการบัญชี LINE OA',
@@ -102,6 +132,7 @@ const translations = {
     'admin.package': 'แพ็คเกจ',
     'admin.organizer.id': 'รหัสผู้จัดการ',
     'admin.date': 'วันที่',
+    'admin.submit.application': 'ส่งใบสมัครลงทะเบียน LINE OA',
     
     // 404
     '404.title': 'ขออภัย! ไม่พบหน้าที่คุณต้องการ',
@@ -147,6 +178,8 @@ const translations = {
     'home.promoted.badge': 'Featured',
     'home.popular.title': 'Popular Accounts',
     'home.popular.badge': 'Popular',
+    'home.all.accounts.title': 'All LINE Official Accounts',
+    'home.all.accounts.badge': 'All',
     'home.categories.title': 'Categories',
     'home.search.results': 'Search Results',
     'home.category.results': 'Accounts in Category',
@@ -155,6 +188,35 @@ const translations = {
     'home.no.results.title': 'No Results Found',
     'home.no.results.description': 'Try searching with different keywords',
     
+    // Authentication
+    'auth.register.title': 'Sign Up',
+    'auth.register.button': 'Sign Up',
+    'auth.register.success': 'Registration Successful',
+    'auth.register.success.description': 'Welcome to the system',
+    'auth.name': 'Name',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.confirm.password': 'Confirm Password',
+    'auth.user.type': 'User Type',
+    'auth.user.type.user': 'General User',
+    'auth.user.type.organizer': 'Organizer',
+    'auth.cancel': 'Cancel',
+    'auth.error.password.mismatch': 'Passwords do not match',
+    'auth.error.password.mismatch.description': 'Please check that passwords match',
+    
+    // Reviews
+    'review.title': 'Write Review',
+    'review.rating': 'Rating',
+    'review.comment': 'Comment',
+    'review.comment.placeholder': 'Share your experience...',
+    'review.submit': 'Submit Review',
+    'review.submit.success': 'Review submitted successfully',
+    'review.submit.success.description': 'Thank you for your review',
+    'review.error.login.required': 'Login required',
+    'review.error.login.required.description': 'Please login to write a review',
+    'review.error.rating.required': 'Rating required',
+    'review.error.rating.required.description': 'Please provide a rating before submitting',
+
     // Manager
     'manager.title': 'Manager Dashboard',
     'manager.description': 'LINE OA Account Management',
@@ -199,6 +261,7 @@ const translations = {
     'admin.package': 'Package',
     'admin.organizer.id': 'Organizer ID',
     'admin.date': 'Date',
+    'admin.submit.application': 'Submit LINE OA Registration',
     
     // 404
     '404.title': 'Sorry! Page not found',
@@ -244,6 +307,8 @@ const translations = {
     'home.promoted.badge': 'おすすめ',
     'home.popular.title': '人気アカウント',
     'home.popular.badge': '人気',
+    'home.all.accounts.title': 'すべてのLINE公式アカウント',
+    'home.all.accounts.badge': 'すべて',
     'home.categories.title': 'カテゴリ',
     'home.search.results': '検索結果',
     'home.category.results': 'カテゴリ内のアカウント',
@@ -252,6 +317,35 @@ const translations = {
     'home.no.results.title': '検索結果が見つかりません',
     'home.no.results.description': '他のキーワードで検索してみてください',
     
+    // Authentication
+    'auth.register.title': 'ユーザー登録',
+    'auth.register.button': '登録する',
+    'auth.register.success': '登録が完了しました',
+    'auth.register.success.description': 'システムへようこそ',
+    'auth.name': '名前',
+    'auth.email': 'メールアドレス',
+    'auth.password': 'パスワード',
+    'auth.confirm.password': 'パスワード確認',
+    'auth.user.type': 'ユーザータイプ',
+    'auth.user.type.user': '一般ユーザー',
+    'auth.user.type.organizer': 'オーガナイザー',
+    'auth.cancel': 'キャンセル',
+    'auth.error.password.mismatch': 'パスワードが一致しません',
+    'auth.error.password.mismatch.description': 'パスワードが一致していることを確認してください',
+    
+    // Reviews
+    'review.title': 'レビューを書く',
+    'review.rating': '評価',
+    'review.comment': 'コメント',
+    'review.comment.placeholder': 'あなたの体験をシェアしてください...',
+    'review.submit': 'レビューを送信',
+    'review.submit.success': 'レビューを送信しました',
+    'review.submit.success.description': 'レビューありがとうございます',
+    'review.error.login.required': 'ログインが必要です',
+    'review.error.login.required.description': 'レビューを書くにはログインしてください',
+    'review.error.rating.required': '評価が必要です',
+    'review.error.rating.required.description': '送信前に評価を入力してください',
+
     // Manager
     'manager.title': 'オーガナイザーダッシュボード',
     'manager.description': 'LINE OAアカウント管理',
@@ -296,6 +390,7 @@ const translations = {
     'admin.package': 'パッケージ',
     'admin.organizer.id': 'オーガナイザーID',
     'admin.date': '日付',
+    'admin.submit.application': 'LINE OA登録申請を提出',
     
     // 404
     '404.title': '申し訳ございません！ページが見つかりません',

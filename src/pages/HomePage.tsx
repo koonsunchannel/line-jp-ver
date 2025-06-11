@@ -37,7 +37,12 @@ export function HomePage() {
       filtered = filtered.filter(account => account.category === selectedCategory);
     }
 
-    return filtered;
+    // Sort promoted accounts first within any category/filter
+    return filtered.sort((a, b) => {
+      if (a.isPromoted && !b.isPromoted) return -1;
+      if (!a.isPromoted && b.isPromoted) return 1;
+      return 0;
+    });
   }, [searchQuery, selectedCategory, approvedAccounts]);
 
   const promotedAccounts = approvedAccounts.filter(account => account.isPromoted);
@@ -57,7 +62,6 @@ export function HomePage() {
             title: t('search.location.success'),
             description: t('search.location.searching'),
           });
-          // Here you would filter by location
         },
         (error) => {
           toast({
@@ -88,46 +92,48 @@ export function HomePage() {
     );
   };
 
-  const getCategoryInfo = (categoryId: string) => {
-    return categories.find(c => c.id === categoryId);
-  };
-
   const getCategoryName = (categoryId: string) => {
     return t(`category.${categoryId}`);
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-16">
+      {/* Hero Section - Enhanced mobile responsiveness */}
+      <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6">
             {t('home.hero.title')}
             <br />
             <span className="text-yellow-300">{t('home.hero.subtitle')}</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-green-100">
+          <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-green-100 px-4">
             {t('home.hero.description')}
           </p>
-          <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
+          <div className="w-full max-w-2xl mx-auto">
+            <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
+          </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Category Filter - moved to top */}
-        <CategoryFilter
-          selectedCategory={selectedCategory}
-          onCategorySelect={setSelectedCategory}
-        />
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 md:py-12">
+        {/* Category Filter - Enhanced mobile layout */}
+        <div className="mb-6 sm:mb-8">
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+          />
+        </div>
 
         {!searchQuery && !selectedCategory && (
           <>
             {/* Promoted Accounts Carousel */}
-            <section className="mb-16">
-              <div className="flex items-center gap-3 mb-8">
-                <Sparkles className="w-6 h-6 text-orange-500" />
-                <h2 className="text-3xl font-bold text-gray-900">{t('home.promoted.title')}</h2>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+            <section className="mb-8 sm:mb-12 md:mb-16">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{t('home.promoted.title')}</h2>
+                </div>
+                <Badge variant="secondary" className="bg-orange-100 text-orange-700 text-xs sm:text-sm">
                   {t('home.promoted.badge')}
                 </Badge>
               </div>
@@ -140,16 +146,37 @@ export function HomePage() {
             </section>
 
             {/* Popular Accounts Carousel */}
-            <section className="mb-16">
-              <div className="flex items-center gap-3 mb-8">
-                <TrendingUp className="w-6 h-6 text-red-500" />
-                <h2 className="text-3xl font-bold text-gray-900">{t('home.popular.title')}</h2>
-                <Badge variant="secondary" className="bg-red-100 text-red-700">
+            <section className="mb-8 sm:mb-12 md:mb-16">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{t('home.popular.title')}</h2>
+                </div>
+                <Badge variant="secondary" className="bg-red-100 text-red-700 text-xs sm:text-sm">
                   {t('home.popular.badge')}
                 </Badge>
               </div>
               <AccountCarousel
                 accounts={popularAccounts}
+                onAccountClick={handleAccountClick}
+                onFavorite={handleFavorite}
+                favorites={favorites}
+              />
+            </section>
+
+            {/* All LINE OA Accounts Carousel */}
+            <section className="mb-8 sm:mb-12 md:mb-16">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Star className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{t('home.all.accounts.title')}</h2>
+                </div>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm">
+                  {t('home.all.accounts.badge')}
+                </Badge>
+              </div>
+              <AccountCarousel
+                accounts={approvedAccounts}
                 onAccountClick={handleAccountClick}
                 onFavorite={handleFavorite}
                 favorites={favorites}
@@ -161,16 +188,18 @@ export function HomePage() {
         {/* Search Results or Category Results */}
         {(searchQuery || selectedCategory) && (
           <section>
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <div className="mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                 {searchQuery ? `${t('home.search.results')} "${searchQuery}"` : 
                  selectedCategory ? `${t('home.category.results')} ${getCategoryName(selectedCategory)}` : 
-                 'บัญชีทั้งหมด'}
+                 t('home.all.accounts.title')}
               </h2>
-              <p className="text-gray-600">{t('home.results.found')} {filteredAccounts.length} {t('home.results.accounts')}</p>
+              <p className="text-sm sm:text-base text-gray-600">
+                {t('home.results.found')} {filteredAccounts.length} {t('home.results.accounts')}
+              </p>
             </div>
             
-            {/* Use carousel for category results */}
+            {/* Use carousel for category results, grid for search */}
             {selectedCategory && !searchQuery ? (
               <AccountCarousel
                 accounts={filteredAccounts}
@@ -179,7 +208,7 @@ export function HomePage() {
                 favorites={favorites}
               />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {filteredAccounts.map((account) => (
                   <AccountCard
                     key={account.id}
@@ -193,29 +222,14 @@ export function HomePage() {
             )}
 
             {filteredAccounts.length === 0 && (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('home.no.results.title')}</h3>
-                <p className="text-gray-600">{t('home.no.results.description')}</p>
+              <div className="text-center py-12 sm:py-16">
+                <div className="text-4xl sm:text-6xl mb-4">🔍</div>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                  {t('home.no.results.title')}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600">{t('home.no.results.description')}</p>
               </div>
             )}
-          </section>
-        )}
-
-        {/* Default Category Display */}
-        {!searchQuery && !selectedCategory && (
-          <section>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {approvedAccounts.slice(0, 9).map((account) => (
-                <AccountCard
-                  key={account.id}
-                  account={account}
-                  onClick={() => handleAccountClick(account)}
-                  onFavorite={() => handleFavorite(account.id)}
-                  isFavorited={favorites.includes(account.id)}
-                />
-              ))}
-            </div>
           </section>
         )}
       </div>

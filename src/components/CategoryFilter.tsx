@@ -29,24 +29,24 @@ export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryF
     : t('category.select');
 
   return (
-    <div className="flex justify-center mb-6">
+    <div className="flex justify-center mb-4 sm:mb-6">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 
             variant="outline" 
-            className="w-64 justify-between bg-white border border-gray-200 hover:bg-gray-50"
+            className="w-full sm:w-64 justify-between bg-white border border-gray-200 hover:bg-gray-50 text-sm sm:text-base"
           >
             <div className="flex items-center gap-2">
-              {selectedCategoryInfo && <span>{selectedCategoryInfo.icon}</span>}
-              <span>{displayText}</span>
+              {selectedCategoryInfo && <span className="text-sm sm:text-base">{selectedCategoryInfo.icon}</span>}
+              <span className="truncate">{displayText}</span>
             </div>
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="w-4 h-4 flex-shrink-0" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-64 bg-white border border-gray-200 shadow-lg z-50">
+        <DropdownMenuContent className="w-[calc(100vw-2rem)] sm:w-64 bg-white border border-gray-200 shadow-lg z-50">
           <DropdownMenuItem
             onClick={() => onCategorySelect(null)}
-            className={`cursor-pointer hover:bg-gray-50 ${
+            className={`cursor-pointer hover:bg-gray-50 text-sm sm:text-base ${
               selectedCategory === null ? 'bg-green-50 text-green-700' : ''
             }`}
           >
@@ -56,7 +56,7 @@ export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryF
             <DropdownMenuItem
               key={category.id}
               onClick={() => onCategorySelect(category.id)}
-              className={`cursor-pointer hover:bg-gray-50 flex items-center gap-2 ${
+              className={`cursor-pointer hover:bg-gray-50 flex items-center gap-2 text-sm sm:text-base ${
                 selectedCategory === category.id ? 'bg-green-50 text-green-700' : ''
               }`}
             >

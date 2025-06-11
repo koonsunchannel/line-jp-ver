@@ -16,6 +16,8 @@ interface AccountCarouselProps {
   onFavorite?: (accountId: string) => void;
   favorites?: string[];
   title?: string;
+  onReview?: (accountId: string) => void;
+  showReviewButton?: boolean;
 }
 
 export function AccountCarousel({ 
@@ -23,13 +25,15 @@ export function AccountCarousel({
   onAccountClick, 
   onFavorite, 
   favorites = [], 
-  title 
+  title,
+  onReview,
+  showReviewButton = false
 }: AccountCarouselProps) {
   if (accounts.length === 0) return null;
 
   return (
-    <div className="space-y-6">
-      {title && <h2 className="text-2xl font-bold text-gray-900">{title}</h2>}
+    <div className="space-y-4 sm:space-y-6">
+      {title && <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{title}</h2>}
       <Carousel
         opts={{
           align: "start",
@@ -37,20 +41,24 @@ export function AccountCarousel({
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ml-2 sm:-ml-4">
           {accounts.map((account) => (
-            <CarouselItem key={account.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+            <CarouselItem key={account.id} className="pl-2 sm:pl-4 basis-4/5 sm:basis-1/2 lg:basis-1/3">
               <AccountCard
                 account={account}
                 onClick={() => onAccountClick(account)}
                 onFavorite={onFavorite ? () => onFavorite(account.id) : undefined}
                 isFavorited={favorites.includes(account.id)}
+                onReview={onReview ? () => onReview(account.id) : undefined}
+                showReviewButton={showReviewButton}
               />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-4" />
-        <CarouselNext className="-right-4" />
+        <div className="hidden sm:block">
+          <CarouselPrevious className="-left-6 lg:-left-12" />
+          <CarouselNext className="-right-6 lg:-right-12" />
+        </div>
       </Carousel>
     </div>
   );
