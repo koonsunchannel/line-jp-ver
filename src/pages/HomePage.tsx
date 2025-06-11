@@ -92,6 +92,10 @@ export function HomePage() {
     return categories.find(c => c.id === categoryId);
   };
 
+  const getCategoryName = (categoryId: string) => {
+    return t(`category.${categoryId}`);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -110,6 +114,12 @@ export function HomePage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Category Filter - moved to top */}
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onCategorySelect={setSelectedCategory}
+        />
+
         {!searchQuery && !selectedCategory && (
           <>
             {/* Promoted Accounts Carousel */}
@@ -145,18 +155,6 @@ export function HomePage() {
                 favorites={favorites}
               />
             </section>
-
-            {/* Categories */}
-            <section>
-              <div className="flex items-center gap-3 mb-8">
-                <Star className="w-6 h-6 text-blue-500" />
-                <h2 className="text-3xl font-bold text-gray-900">{t('home.categories.title')}</h2>
-              </div>
-              <CategoryFilter
-                selectedCategory={selectedCategory}
-                onCategorySelect={setSelectedCategory}
-              />
-            </section>
           </>
         )}
 
@@ -166,28 +164,33 @@ export function HomePage() {
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
                 {searchQuery ? `${t('home.search.results')} "${searchQuery}"` : 
-                 selectedCategory ? `${t('home.category.results')} ${getCategoryInfo(selectedCategory)?.name}` : 
+                 selectedCategory ? `${t('home.category.results')} ${getCategoryName(selectedCategory)}` : 
                  'บัญชีทั้งหมด'}
               </h2>
               <p className="text-gray-600">{t('home.results.found')} {filteredAccounts.length} {t('home.results.accounts')}</p>
             </div>
             
-            <CategoryFilter
-              selectedCategory={selectedCategory}
-              onCategorySelect={setSelectedCategory}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAccounts.map((account) => (
-                <AccountCard
-                  key={account.id}
-                  account={account}
-                  onClick={() => handleAccountClick(account)}
-                  onFavorite={() => handleFavorite(account.id)}
-                  isFavorited={favorites.includes(account.id)}
-                />
-              ))}
-            </div>
+            {/* Use carousel for category results */}
+            {selectedCategory && !searchQuery ? (
+              <AccountCarousel
+                accounts={filteredAccounts}
+                onAccountClick={handleAccountClick}
+                onFavorite={handleFavorite}
+                favorites={favorites}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredAccounts.map((account) => (
+                  <AccountCard
+                    key={account.id}
+                    account={account}
+                    onClick={() => handleAccountClick(account)}
+                    onFavorite={() => handleFavorite(account.id)}
+                    isFavorited={favorites.includes(account.id)}
+                  />
+                ))}
+              </div>
+            )}
 
             {filteredAccounts.length === 0 && (
               <div className="text-center py-16">

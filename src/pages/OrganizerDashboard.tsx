@@ -1,16 +1,22 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { AccountRegistrationForm } from '../components/AccountRegistrationForm';
 import { mockAccounts, promotionPackages, mockTransactions } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard } from 'lucide-react';
+import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { useToast } from '@/hooks/use-toast';
 
 export function OrganizerDashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
+  const { toast } = useToast();
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (!user || user.type !== 'organizer') {
     return (
@@ -38,16 +44,78 @@ export function OrganizerDashboard() {
 
   const handlePackagePurchase = (packageId: string) => {
     setSelectedPackage(packageId);
-    // In a real app, this would redirect to payment processing
-    alert(`${promotionPackages.find(p => p.id === packageId)?.name} パッケージの購入手続きを開始します。`);
+    const pkg = promotionPackages.find(p => p.id === packageId);
+    alert(`${pkg?.name} パッケージの購入手続きを開始します。`);
+  };
+
+  const handleExportExcel = () => {
+    // Create Excel data
+    const data = myAccounts.map(account => ({
+      name: account.name,
+      category: account.category,
+      followers: account.followers,
+      views: account.views,
+      friendAdds: account.friendAdds,
+      rating: account.rating
+    }));
+
+    // Convert to CSV format (simplified Excel export)
+    const headers = ['Name', 'Category', 'Followers', 'Views', 'Friend Adds', 'Rating'];
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row => Object.values(row).join(','))
+    ].join('\n');
+
+    // Create download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'line_oa_statistics.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: t('manager.export.success'),
+      description: 'CSV ファイルがダウンロードされました',
+    });
+  };
+
+  const handleRegistrationSubmit = (data: any) => {
+    // Add logic to submit registration
+    toast({
+      title: "申請を送信しました",
+      description: "LINE OA登録申請が正常に送信されました。",
+    });
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">オーガナイザーダッシュボード</h1>
-          <p className="text-gray-600">ようこそ、{user.name}さん</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('manager.title')}</h1>
+            <p className="text-gray-600">{t('manager.description')}</p>
+          </div>
+          <div className="flex gap-3">
+            <Button 
+              onClick={handleExportExcel}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              {t('manager.export.excel')}
+            </Button>
+            <Button 
+              onClick={() => setShowRegistrationForm(true)}
+              className="bg-green-500 hover:bg-green-600 flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              {t('manager.submit.application')}
+            </Button>
+          </div>
         </div>
 
         {/* Overview Stats */}
@@ -56,7 +124,7 @@ export function OrganizerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">総閲覧数</p>
+                  <p className="text-sm text-gray-600">{t('manager.total.views')}</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {myAccounts.reduce((sum, acc) => sum + acc.views, 0).toLocaleString()}
                   </p>
@@ -70,7 +138,7 @@ export function OrganizerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">友だち追加数</p>
+                  <p className="text-sm text-gray-600">{t('manager.friend.adds')}</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {myAccounts.reduce((sum, acc) => sum + acc.friendAdds, 0).toLocaleString()}
                   </p>
@@ -84,7 +152,7 @@ export function OrganizerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">総フォロワー数</p>
+                  <p className="text-sm text-gray-600">{t('manager.total.followers')}</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {myAccounts.reduce((sum, acc) => sum + acc.followers, 0).toLocaleString()}
                   </p>
@@ -98,7 +166,7 @@ export function OrganizerDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">平均評価</p>
+                  <p className="text-sm text-gray-600">{t('manager.average.rating')}</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {(myAccounts.reduce((sum, acc) => sum + acc.rating, 0) / myAccounts.length || 0).toFixed(1)}
                   </p>
@@ -115,7 +183,7 @@ export function OrganizerDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />
-                アクセス推移
+                {t('manager.analytics')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -125,8 +193,8 @@ export function OrganizerDashboard() {
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
-                  <Line type="monotone" dataKey="views" stroke="#3b82f6" strokeWidth={2} name="閲覧数" />
-                  <Line type="monotone" dataKey="friendAdds" stroke="#10b981" strokeWidth={2} name="友だち追加" />
+                  <Line type="monotone" dataKey="views" stroke="#3b82f6" strokeWidth={2} name={t('manager.views')} />
+                  <Line type="monotone" dataKey="friendAdds" stroke="#10b981" strokeWidth={2} name={t('manager.friend.adds')} />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -135,7 +203,7 @@ export function OrganizerDashboard() {
           {/* Account Performance */}
           <Card>
             <CardHeader>
-              <CardTitle>アカウント別パフォーマンス</CardTitle>
+              <CardTitle>{t('manager.account.performance')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -144,7 +212,7 @@ export function OrganizerDashboard() {
                   <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="friendAdds" fill="#10b981" name="友だち追加" />
+                  <Bar dataKey="friendAdds" fill="#10b981" name={t('manager.friend.adds')} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -154,7 +222,7 @@ export function OrganizerDashboard() {
         {/* My Accounts */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>管理中のアカウント</CardTitle>
+            <CardTitle>{t('manager.my.accounts')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -173,19 +241,19 @@ export function OrganizerDashboard() {
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">閲覧数</p>
+                      <p className="text-sm text-gray-600">{t('manager.views')}</p>
                       <p className="font-semibold">{account.views.toLocaleString()}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">友だち追加</p>
+                      <p className="text-sm text-gray-600">{t('manager.friend.adds')}</p>
                       <p className="font-semibold">{account.friendAdds.toLocaleString()}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">評価</p>
+                      <p className="text-sm text-gray-600">{t('manager.rating')}</p>
                       <p className="font-semibold">{account.rating}/5.0</p>
                     </div>
                     {account.isPromoted && (
-                      <Badge className="bg-orange-500">プロモーション中</Badge>
+                      <Badge className="bg-orange-500">{t('manager.promoting')}</Badge>
                     )}
                   </div>
                 </div>
@@ -200,7 +268,7 @@ export function OrganizerDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="w-5 h-5" />
-                プロモーションパッケージ
+                {t('manager.promotion.packages')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -211,7 +279,7 @@ export function OrganizerDashboard() {
                       <div>
                         <h3 className="font-semibold text-gray-900">{pkg.name}</h3>
                         {pkg.isPopular && (
-                          <Badge className="bg-orange-500 text-white mt-1">人気</Badge>
+                          <Badge className="bg-orange-500 text-white mt-1">{t('manager.popular')}</Badge>
                         )}
                       </div>
                       <div className="text-right">
@@ -229,7 +297,7 @@ export function OrganizerDashboard() {
                       className="w-full"
                       variant={pkg.isPopular ? "default" : "outline"}
                     >
-                      購入する
+                      {t('manager.purchase')}
                     </Button>
                   </div>
                 ))}
@@ -242,7 +310,7 @@ export function OrganizerDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5" />
-                取引履歴
+                {t('manager.transaction.history')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -263,8 +331,8 @@ export function OrganizerDashboard() {
                             transaction.status === 'pending' ? 'secondary' : 'destructive'
                           }
                         >
-                          {transaction.status === 'completed' ? '完了' :
-                           transaction.status === 'pending' ? '処理中' : '失敗'}
+                          {transaction.status === 'completed' ? t('manager.completed') :
+                           transaction.status === 'pending' ? t('manager.pending') : t('manager.failed')}
                         </Badge>
                       </div>
                     </div>
@@ -274,6 +342,12 @@ export function OrganizerDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        <AccountRegistrationForm
+          isOpen={showRegistrationForm}
+          onClose={() => setShowRegistrationForm(false)}
+          onSubmit={handleRegistrationSubmit}
+        />
       </div>
     </div>
   );

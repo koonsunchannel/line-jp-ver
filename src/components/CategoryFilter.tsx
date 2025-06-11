@@ -2,6 +2,14 @@
 import React from 'react';
 import { categories } from '../data/mockData';
 import { useLanguage } from '../context/LanguageContext';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface CategoryFilterProps {
   selectedCategory: string | null;
@@ -11,32 +19,53 @@ interface CategoryFilterProps {
 export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryFilterProps) {
   const { t } = useLanguage();
 
+  const getCategoryName = (categoryId: string) => {
+    return t(`category.${categoryId}`);
+  };
+
+  const selectedCategoryInfo = categories.find(c => c.id === selectedCategory);
+  const displayText = selectedCategory 
+    ? getCategoryName(selectedCategory)
+    : t('category.select');
+
   return (
-    <div className="flex flex-wrap gap-3 justify-center mb-8">
-      <button
-        onClick={() => onCategorySelect(null)}
-        className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
-          selectedCategory === null
-            ? 'bg-green-500 text-white shadow-lg'
-            : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-        }`}
-      >
-        {t('category.all')}
-      </button>
-      {categories.map((category) => (
-        <button
-          key={category.id}
-          onClick={() => onCategorySelect(category.id)}
-          className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-            selectedCategory === category.id
-              ? 'bg-green-500 text-white shadow-lg'
-              : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-          }`}
-        >
-          <span>{category.icon}</span>
-          <span>{category.name}</span>
-        </button>
-      ))}
+    <div className="flex justify-center mb-6">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="w-64 justify-between bg-white border border-gray-200 hover:bg-gray-50"
+          >
+            <div className="flex items-center gap-2">
+              {selectedCategoryInfo && <span>{selectedCategoryInfo.icon}</span>}
+              <span>{displayText}</span>
+            </div>
+            <ChevronDown className="w-4 h-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-64 bg-white border border-gray-200 shadow-lg z-50">
+          <DropdownMenuItem
+            onClick={() => onCategorySelect(null)}
+            className={`cursor-pointer hover:bg-gray-50 ${
+              selectedCategory === null ? 'bg-green-50 text-green-700' : ''
+            }`}
+          >
+            {t('category.all')}
+          </DropdownMenuItem>
+          {categories.map((category) => (
+            <DropdownMenuItem
+              key={category.id}
+              onClick={() => onCategorySelect(category.id)}
+              className={`cursor-pointer hover:bg-gray-50 flex items-center gap-2 ${
+                selectedCategory === category.id ? 'bg-green-50 text-green-700' : ''
+              }`}
+            >
+              <span>{category.icon}</span>
+              <span>{getCategoryName(category.id)}</span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

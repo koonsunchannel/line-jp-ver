@@ -1,13 +1,13 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { AccountRegistrationForm } from '../components/AccountRegistrationForm';
 import { mockAccounts, mockTransactions, promotionPackages } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check, X, Eye, DollarSign, Users, TrendingUp, Plus } from 'lucide-react';
+import { Check, X, Eye, DollarSign, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export function AdminDashboard() {
@@ -17,7 +17,6 @@ export function AdminDashboard() {
   const [pendingAccounts, setPendingAccounts] = useState(
     mockAccounts.filter(account => account.verificationStatus === 'pending')
   );
-  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (!user || user.type !== 'admin') {
     return (
@@ -38,10 +37,6 @@ export function AdminDashboard() {
     });
   };
 
-  const handleRegistrationSubmit = (data: any) => {
-    setPendingAccounts(prev => [...prev, data]);
-  };
-
   const approvedAccounts = mockAccounts.filter(account => account.verificationStatus === 'approved');
   const totalRevenue = mockTransactions
     .filter(t => t.status === 'completed')
@@ -50,18 +45,9 @@ export function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.title')}</h1>
-            <p className="text-gray-600">{t('admin.description')}</p>
-          </div>
-          <Button 
-            onClick={() => setShowRegistrationForm(true)}
-            className="bg-green-500 hover:bg-green-600"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            {t('admin.submit.application')}
-          </Button>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.title')}</h1>
+          <p className="text-gray-600">{t('admin.description')}</p>
         </div>
 
         {/* Overview Stats */}
@@ -119,15 +105,15 @@ export function AdminDashboard() {
 
         <Tabs defaultValue="pending" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="pending">保留中アカウント</TabsTrigger>
-            <TabsTrigger value="accounts">承認済みアカウント</TabsTrigger>
-            <TabsTrigger value="transactions">取引履歴</TabsTrigger>
+            <TabsTrigger value="pending">{t('admin.pending.accounts')}</TabsTrigger>
+            <TabsTrigger value="accounts">{t('admin.approved.list')}</TabsTrigger>
+            <TabsTrigger value="transactions">{t('admin.transaction.list')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending">
             <Card>
               <CardHeader>
-                <CardTitle>承認待ちアカウント</CardTitle>
+                <CardTitle>{t('admin.pending.accounts')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {pendingAccounts.length === 0 ? (
@@ -186,7 +172,7 @@ export function AdminDashboard() {
           <TabsContent value="accounts">
             <Card>
               <CardHeader>
-                <CardTitle>承認済みアカウント一覧</CardTitle>
+                <CardTitle>{t('admin.approved.list')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -205,19 +191,19 @@ export function AdminDashboard() {
                       </div>
                       <div className="flex items-center gap-6">
                         <div className="text-center">
-                          <p className="text-sm text-gray-600">フォロワー</p>
+                          <p className="text-sm text-gray-600">{t('admin.followers')}</p>
                           <p className="font-semibold">{account.followers.toLocaleString()}</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sm text-gray-600">評価</p>
+                          <p className="text-sm text-gray-600">{t('manager.rating')}</p>
                           <p className="font-semibold">{account.rating}/5.0</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sm text-gray-600">閲覧数</p>
+                          <p className="text-sm text-gray-600">{t('manager.views')}</p>
                           <p className="font-semibold">{account.views.toLocaleString()}</p>
                         </div>
                         {account.isPromoted && (
-                          <Badge className="bg-orange-500">プロモーション中</Badge>
+                          <Badge className="bg-orange-500">{t('manager.promoting')}</Badge>
                         )}
                       </div>
                     </div>
@@ -230,7 +216,7 @@ export function AdminDashboard() {
           <TabsContent value="transactions">
             <Card>
               <CardHeader>
-                <CardTitle>取引履歴・支払い確認</CardTitle>
+                <CardTitle>{t('admin.transaction.list')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -239,10 +225,10 @@ export function AdminDashboard() {
                     return (
                       <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                         <div>
-                          <h3 className="font-semibold text-gray-900">取引ID: {transaction.id}</h3>
-                          <p className="text-sm text-gray-600">パッケージ: {pkg?.name}</p>
-                          <p className="text-sm text-gray-600">オーガナイザーID: {transaction.organizerId}</p>
-                          <p className="text-sm text-gray-600">日付: {transaction.date}</p>
+                          <h3 className="font-semibold text-gray-900">{t('admin.transaction.id')}: {transaction.id}</h3>
+                          <p className="text-sm text-gray-600">{t('admin.package')}: {pkg?.name}</p>
+                          <p className="text-sm text-gray-600">{t('admin.organizer.id')}: {transaction.organizerId}</p>
+                          <p className="text-sm text-gray-600">{t('admin.date')}: {transaction.date}</p>
                         </div>
                         <div className="text-right">
                           <p className="text-xl font-bold text-gray-900">¥{transaction.amount.toLocaleString()}</p>
@@ -252,8 +238,8 @@ export function AdminDashboard() {
                               transaction.status === 'pending' ? 'secondary' : 'destructive'
                             }
                           >
-                            {transaction.status === 'completed' ? '完了' :
-                             transaction.status === 'pending' ? '処理中' : '失敗'}
+                            {transaction.status === 'completed' ? t('manager.completed') :
+                             transaction.status === 'pending' ? t('manager.pending') : t('manager.failed')}
                           </Badge>
                         </div>
                       </div>
@@ -264,12 +250,6 @@ export function AdminDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
-
-        <AccountRegistrationForm
-          isOpen={showRegistrationForm}
-          onClose={() => setShowRegistrationForm(false)}
-          onSubmit={handleRegistrationSubmit}
-        />
       </div>
     </div>
   );
