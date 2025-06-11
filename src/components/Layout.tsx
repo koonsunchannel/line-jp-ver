@@ -3,6 +3,8 @@ import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { Home, User, Settings, LogOut, Menu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
@@ -13,6 +15,7 @@ import {
 
 export function Layout() {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -25,20 +28,20 @@ export function Layout() {
     <>
       <Link to="/" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
         <Home className="w-5 h-5" />
-        <span>หน้าแรก</span>
+        <span>{t('nav.home')}</span>
       </Link>
       
       {user?.type === 'organizer' && (
         <Link to="/organizer" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
           <Settings className="w-5 h-5" />
-          <span>หน้าจัดการ</span>
+          <span>{t('nav.management')}</span>
         </Link>
       )}
       
       {user?.type === 'admin' && (
         <Link to="/admin" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
           <Settings className="w-5 h-5" />
-          <span>หน้าจัดการ</span>
+          <span>{t('nav.management')}</span>
         </Link>
       )}
     </>
@@ -53,45 +56,50 @@ export function Layout() {
               <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">LINE</span>
               </div>
-              <span className="font-bold text-xl text-gray-900">ค้นหา OA</span>
+              <span className="font-bold text-xl text-gray-900">{t('site.title')}</span>
             </Link>
 
             {isMobile ? (
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Menu className="w-5 h-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <div className="flex flex-col gap-6 mt-8">
-                    <NavItems />
-                    {user ? (
-                      <div className="border-t pt-4">
-                        <div className="flex items-center gap-2 mb-4">
-                          <User className="w-5 h-5" />
-                          <span className="font-medium">{user.name}</span>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher />
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <Menu className="w-5 h-5" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent>
+                    <div className="flex flex-col gap-6 mt-8">
+                      <NavItems />
+                      {user ? (
+                        <div className="border-t pt-4">
+                          <div className="flex items-center gap-2 mb-4">
+                            <User className="w-5 h-5" />
+                            <span className="font-medium">{user.name}</span>
+                          </div>
+                          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start">
+                            <LogOut className="w-4 h-4 mr-2" />
+                            {t('nav.logout')}
+                          </Button>
                         </div>
-                        <Button onClick={handleLogout} variant="ghost" className="w-full justify-start">
-                          <LogOut className="w-4 h-4 mr-2" />
-                          ออกจากระบบ
-                        </Button>
-                      </div>
-                    ) : (
-                      <Link to="/login">
-                        <Button className="w-full bg-green-500 hover:bg-green-600">
-                          เข้าสู่ระบบ
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </SheetContent>
-              </Sheet>
+                      ) : (
+                        <Link to="/login">
+                          <Button className="w-full bg-green-500 hover:bg-green-600">
+                            {t('nav.login')}
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
             ) : (
               <div className="flex items-center gap-6">
                 <nav className="flex items-center gap-6">
                   <NavItems />
                 </nav>
+                
+                <LanguageSwitcher />
                 
                 {user ? (
                   <div className="flex items-center gap-4">
@@ -106,7 +114,7 @@ export function Layout() {
                 ) : (
                   <Link to="/login">
                     <Button className="bg-green-500 hover:bg-green-600">
-                      เข้าสู่ระบบ
+                      {t('nav.login')}
                     </Button>
                   </Link>
                 )}

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { categories } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CategoryFilterProps {
   selectedCategory: string | null;
@@ -8,6 +9,8 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryFilterProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="flex flex-wrap gap-3 justify-center mb-8">
       <button
@@ -18,7 +21,7 @@ export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryF
             : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
         }`}
       >
-        ทั้งหมด
+        {t('category.all')}
       </button>
       {categories.map((category) => (
         <button

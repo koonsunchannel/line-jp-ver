@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Search, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -9,7 +10,8 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export function SearchBar({ onSearch, onLocationSearch, placeholder = "ค้นหาบัญชี LINE Official..." }: SearchBarProps) {
+export function SearchBar({ onSearch, onLocationSearch, placeholder }: SearchBarProps) {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,7 +28,7 @@ export function SearchBar({ onSearch, onLocationSearch, placeholder = "ค้น
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
+            placeholder={placeholder || t('search.placeholder')}
             className="flex-1 outline-none text-gray-700 placeholder-gray-400"
           />
         </div>
@@ -44,7 +46,7 @@ export function SearchBar({ onSearch, onLocationSearch, placeholder = "ค้น
             type="submit" 
             className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-2"
           >
-            ค้นหา
+            {t('search.button')}
           </Button>
         </div>
       </form>

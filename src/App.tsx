@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { AuthProvider } from "./context/AuthContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { AccountDetailPage } from "./pages/AccountDetailPage";
@@ -20,20 +21,22 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="account/:id" element={<AccountDetailPage />} />
-              <Route path="organizer" element={<OrganizerDashboard />} />
-              <Route path="admin" element={<AdminDashboard />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="account/:id" element={<AccountDetailPage />} />
+                <Route path="organizer" element={<OrganizerDashboard />} />
+                <Route path="admin" element={<AdminDashboard />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

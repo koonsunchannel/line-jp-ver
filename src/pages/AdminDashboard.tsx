@@ -1,20 +1,23 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { AccountRegistrationForm } from '../components/AccountRegistrationForm';
 import { mockAccounts, mockTransactions, promotionPackages } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check, X, Eye, DollarSign, Users, TrendingUp } from 'lucide-react';
+import { Check, X, Eye, DollarSign, Users, TrendingUp, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export function AdminDashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [pendingAccounts, setPendingAccounts] = useState(
     mockAccounts.filter(account => account.verificationStatus === 'pending')
   );
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (!user || user.type !== 'admin') {
     return (
@@ -30,9 +33,13 @@ export function AdminDashboard() {
   const handleAccountApproval = (accountId: string, approved: boolean) => {
     setPendingAccounts(prev => prev.filter(acc => acc.id !== accountId));
     toast({
-      title: approved ? "アカウントを承認しました" : "アカウントを却下しました",
-      description: `アカウントの審査が完了しました。`,
+      title: approved ? t('admin.approved.message') : t('admin.rejected.message'),
+      description: t('admin.review.completed'),
     });
+  };
+
+  const handleRegistrationSubmit = (data: any) => {
+    setPendingAccounts(prev => [...prev, data]);
   };
 
   const approvedAccounts = mockAccounts.filter(account => account.verificationStatus === 'approved');
@@ -43,9 +50,18 @@ export function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">グローバル管理者ダッシュボード</h1>
-          <p className="text-gray-600">システム全体の管理と監視</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.title')}</h1>
+            <p className="text-gray-600">{t('admin.description')}</p>
+          </div>
+          <Button 
+            onClick={() => setShowRegistrationForm(true)}
+            className="bg-green-500 hover:bg-green-600"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t('admin.submit.application')}
+          </Button>
         </div>
 
         {/* Overview Stats */}
@@ -54,7 +70,7 @@ export function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">承認済みアカウント</p>
+                  <p className="text-sm text-gray-600">{t('admin.approved')}</p>
                   <p className="text-2xl font-bold text-gray-900">{approvedAccounts.length}</p>
                 </div>
                 <Check className="w-8 h-8 text-green-500" />
@@ -66,7 +82,7 @@ export function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">保留中アカウント</p>
+                  <p className="text-sm text-gray-600">{t('admin.pending')}</p>
                   <p className="text-2xl font-bold text-gray-900">{pendingAccounts.length}</p>
                 </div>
                 <Eye className="w-8 h-8 text-orange-500" />
@@ -78,7 +94,7 @@ export function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">総売上</p>
+                  <p className="text-sm text-gray-600">{t('admin.revenue')}</p>
                   <p className="text-2xl font-bold text-gray-900">¥{totalRevenue.toLocaleString()}</p>
                 </div>
                 <DollarSign className="w-8 h-8 text-blue-500" />
@@ -90,7 +106,7 @@ export function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">総フォロワー数</p>
+                  <p className="text-sm text-gray-600">{t('admin.followers')}</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {approvedAccounts.reduce((sum, acc) => sum + acc.followers, 0).toLocaleString()}
                   </p>
@@ -116,7 +132,7 @@ export function AdminDashboard() {
               <CardContent>
                 {pendingAccounts.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-gray-600">承認待ちのアカウントはありません</p>
+                    <p className="text-gray-600">{t('admin.no.pending')}</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -149,14 +165,14 @@ export function AdminDashboard() {
                             className="bg-green-500 hover:bg-green-600"
                           >
                             <Check className="w-4 h-4 mr-2" />
-                            承認
+                            {t('admin.approve')}
                           </Button>
                           <Button 
                             onClick={() => handleAccountApproval(account.id, false)}
                             variant="destructive"
                           >
                             <X className="w-4 h-4 mr-2" />
-                            却下
+                            {t('admin.reject')}
                           </Button>
                         </div>
                       </div>
@@ -248,6 +264,12 @@ export function AdminDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <AccountRegistrationForm
+          isOpen={showRegistrationForm}
+          onClose={() => setShowRegistrationForm(false)}
+          onSubmit={handleRegistrationSubmit}
+        />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { Star, Users, MapPin, Heart } from 'lucide-react';
 import { LineOAAccount } from '../types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '../context/LanguageContext';
 
 interface AccountCardProps {
   account: LineOAAccount;
@@ -13,6 +14,8 @@ interface AccountCardProps {
 }
 
 export function AccountCard({ account, onClick, onFavorite, isFavorited }: AccountCardProps) {
+  const { t } = useLanguage();
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onFavorite?.();
@@ -31,7 +34,7 @@ export function AccountCard({ account, onClick, onFavorite, isFavorited }: Accou
         />
         {account.isPromoted && (
           <Badge className="absolute top-3 left-3 bg-orange-500 text-white">
-            โปรโมชั่น
+            {t('account.promotion')}
           </Badge>
         )}
         {onFavorite && (
@@ -77,7 +80,7 @@ export function AccountCard({ account, onClick, onFavorite, isFavorited }: Accou
         </div>
 
         <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg">
-          เพิ่มเพื่อน
+          {t('account.addFriend')}
         </Button>
       </div>
     </div>

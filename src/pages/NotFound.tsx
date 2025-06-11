@@ -1,9 +1,11 @@
 
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 const NotFound = () => {
   const location = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     console.error(
@@ -16,9 +18,9 @@ const NotFound = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">ขออภัย! ไม่พบหน้าที่คุณต้องการ</p>
+        <p className="text-xl text-gray-600 mb-4">{t('404.title')}</p>
         <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          กลับสู่หน้าแรก
+          {t('404.back')}
         </a>
       </div>
     </div>

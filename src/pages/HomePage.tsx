@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { AccountCard } from '../components/AccountCard';
+import { AccountCarousel } from '../components/AccountCarousel';
 import { mockAccounts, categories } from '../data/mockData';
 import { LineOAAccount } from '../types';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, TrendingUp, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '../context/LanguageContext';
 
 export function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +18,7 @@ export function HomePage() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const approvedAccounts = mockAccounts.filter(account => account.verificationStatus === 'approved');
   
@@ -51,23 +54,23 @@ export function HomePage() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           toast({
-            title: "ได้รับข้อมูลตำแหน่งแล้ว",
-            description: "กำลังค้นหาบัญชี LINE Official ใกล้เคียง...",
+            title: t('search.location.success'),
+            description: t('search.location.searching'),
           });
           // Here you would filter by location
         },
         (error) => {
           toast({
-            title: "ไม่สามารถหาตำแหน่งได้",
-            description: "ไม่สามารถหาข้อมูลตำแหน่งได้",
+            title: t('search.location.error'),
+            description: t('search.location.error'),
             variant: "destructive",
           });
         }
       );
     } else {
       toast({
-        title: "เบราว์เซอร์ไม่รองรับ",
-        description: "เบราว์เซอร์ของคุณไม่รองรับการหาตำแหน่ง",
+        title: t('search.location.browser.error'),
+        description: t('search.location.browser.error'),
         variant: "destructive",
       });
     }
@@ -95,12 +98,12 @@ export function HomePage() {
       <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            เครื่องมือค้นหา
+            {t('home.hero.title')}
             <br />
-            <span className="text-yellow-300">บัญชี LINE Official</span>
+            <span className="text-yellow-300">{t('home.hero.subtitle')}</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-green-100">
-            ค้นหาบัญชี LINE Official ที่เหมาะสมกับคุณ
+            {t('home.hero.description')}
           </p>
           <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
         </div>
@@ -109,55 +112,45 @@ export function HomePage() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {!searchQuery && !selectedCategory && (
           <>
-            {/* Promoted Accounts */}
+            {/* Promoted Accounts Carousel */}
             <section className="mb-16">
               <div className="flex items-center gap-3 mb-8">
                 <Sparkles className="w-6 h-6 text-orange-500" />
-                <h2 className="text-3xl font-bold text-gray-900">โปรโมชั่น</h2>
+                <h2 className="text-3xl font-bold text-gray-900">{t('home.promoted.title')}</h2>
                 <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                  แนะนำ
+                  {t('home.promoted.badge')}
                 </Badge>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {promotedAccounts.slice(0, 6).map((account) => (
-                  <AccountCard
-                    key={account.id}
-                    account={account}
-                    onClick={() => handleAccountClick(account)}
-                    onFavorite={() => handleFavorite(account.id)}
-                    isFavorited={favorites.includes(account.id)}
-                  />
-                ))}
-              </div>
+              <AccountCarousel
+                accounts={promotedAccounts.slice(0, 6)}
+                onAccountClick={handleAccountClick}
+                onFavorite={handleFavorite}
+                favorites={favorites}
+              />
             </section>
 
-            {/* Popular Accounts */}
+            {/* Popular Accounts Carousel */}
             <section className="mb-16">
               <div className="flex items-center gap-3 mb-8">
                 <TrendingUp className="w-6 h-6 text-red-500" />
-                <h2 className="text-3xl font-bold text-gray-900">บัญชียอดนิยม</h2>
+                <h2 className="text-3xl font-bold text-gray-900">{t('home.popular.title')}</h2>
                 <Badge variant="secondary" className="bg-red-100 text-red-700">
-                  ยอดนิยม
+                  {t('home.popular.badge')}
                 </Badge>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {popularAccounts.map((account) => (
-                  <AccountCard
-                    key={account.id}
-                    account={account}
-                    onClick={() => handleAccountClick(account)}
-                    onFavorite={() => handleFavorite(account.id)}
-                    isFavorited={favorites.includes(account.id)}
-                  />
-                ))}
-              </div>
+              <AccountCarousel
+                accounts={popularAccounts}
+                onAccountClick={handleAccountClick}
+                onFavorite={handleFavorite}
+                favorites={favorites}
+              />
             </section>
 
             {/* Categories */}
             <section>
               <div className="flex items-center gap-3 mb-8">
                 <Star className="w-6 h-6 text-blue-500" />
-                <h2 className="text-3xl font-bold text-gray-900">หมวดหมู่</h2>
+                <h2 className="text-3xl font-bold text-gray-900">{t('home.categories.title')}</h2>
               </div>
               <CategoryFilter
                 selectedCategory={selectedCategory}
@@ -172,11 +165,11 @@ export function HomePage() {
           <section>
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                {searchQuery ? `ผลการค้นหา "${searchQuery}"` : 
-                 selectedCategory ? `บัญชีในหมวด ${getCategoryInfo(selectedCategory)?.name}` : 
+                {searchQuery ? `${t('home.search.results')} "${searchQuery}"` : 
+                 selectedCategory ? `${t('home.category.results')} ${getCategoryInfo(selectedCategory)?.name}` : 
                  'บัญชีทั้งหมด'}
               </h2>
-              <p className="text-gray-600">พบ {filteredAccounts.length} บัญชี</p>
+              <p className="text-gray-600">{t('home.results.found')} {filteredAccounts.length} {t('home.results.accounts')}</p>
             </div>
             
             <CategoryFilter
@@ -199,8 +192,8 @@ export function HomePage() {
             {filteredAccounts.length === 0 && (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">ไม่พบผลการค้นหา</h3>
-                <p className="text-gray-600">ลองค้นหาด้วยคำอื่น</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('home.no.results.title')}</h3>
+                <p className="text-gray-600">{t('home.no.results.description')}</p>
               </div>
             )}
           </section>
