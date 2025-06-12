@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { LineOAAccount } from '../types';
 import { AccountCard } from './AccountCard';
+import { ShareModal } from './ShareModal';
 import {
   Carousel,
   CarouselContent,
@@ -29,6 +30,14 @@ export function AccountCarousel({
   onReview,
   showReviewButton = false
 }: AccountCarouselProps) {
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<LineOAAccount | null>(null);
+
+  const handleShare = (account: LineOAAccount) => {
+    setSelectedAccount(account);
+    setShareModalOpen(true);
+  };
+
   if (accounts.length === 0) return null;
 
   return (
@@ -51,6 +60,7 @@ export function AccountCarousel({
                 isFavorited={favorites.includes(account.id)}
                 onReview={onReview ? () => onReview(account.id) : undefined}
                 showReviewButton={showReviewButton}
+                onShare={() => handleShare(account)}
               />
             </CarouselItem>
           ))}
@@ -60,6 +70,14 @@ export function AccountCarousel({
           <CarouselNext className="-right-6 lg:-right-12" />
         </div>
       </Carousel>
+
+      {selectedAccount && (
+        <ShareModal
+          isOpen={shareModalOpen}
+          onClose={() => setShareModalOpen(false)}
+          account={selectedAccount}
+        />
+      )}
     </div>
   );
 }

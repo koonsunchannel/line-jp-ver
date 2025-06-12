@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, Users, MapPin, Heart, MessageCircle } from 'lucide-react';
+import { Star, Heart, MapPin, MessageCircle, Share } from 'lucide-react';
 import { LineOAAccount } from '../types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,7 @@ interface AccountCardProps {
   isFavorited?: boolean;
   onReview?: () => void;
   showReviewButton?: boolean;
+  onShare?: () => void;
 }
 
 export function AccountCard({ 
@@ -21,7 +22,8 @@ export function AccountCard({
   onFavorite, 
   isFavorited, 
   onReview,
-  showReviewButton = false
+  showReviewButton = false,
+  onShare
 }: AccountCardProps) {
   const { t } = useLanguage();
 
@@ -33,6 +35,11 @@ export function AccountCard({
   const handleReviewClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onReview?.();
+  };
+
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onShare?.();
   };
 
   return (
@@ -48,16 +55,28 @@ export function AccountCard({
             {t('account.promotion')}
           </Badge>
         )}
-        {onFavorite && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleFavoriteClick}
-            className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/80 hover:bg-white/90 rounded-full p-1.5 sm:p-2"
-          >
-            <Heart className={`w-3 h-3 sm:w-4 sm:h-4 ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-          </Button>
-        )}
+        <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex gap-1">
+          {onShare && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleShareClick}
+              className="bg-white/80 hover:bg-white/90 rounded-full p-1.5 sm:p-2"
+            >
+              <Share className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
+            </Button>
+          )}
+          {onFavorite && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleFavoriteClick}
+              className="bg-white/80 hover:bg-white/90 rounded-full p-1.5 sm:p-2"
+            >
+              <Heart className={`w-3 h-3 sm:w-4 sm:h-4 ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+            </Button>
+          )}
+        </div>
       </div>
       
       <div className="p-3 sm:p-4 md:p-6">
@@ -70,7 +89,7 @@ export function AccountCard({
             <span className="font-medium">{account.rating}</span>
           </div>
           <div className="flex items-center text-xs sm:text-sm text-gray-500">
-            <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <Heart className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-red-500" />
             <span>{account.followers.toLocaleString()}</span>
           </div>
         </div>

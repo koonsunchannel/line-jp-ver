@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { categories } from '../data/mockData';
+import { categories } from '../data/updatedCategories';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from '@/components/ui/button';
 import {
