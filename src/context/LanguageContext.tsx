@@ -148,6 +148,42 @@ const translations = {
     'review.error.rating.required': 'ต้องให้คะแนน',
     'review.error.rating.required.description': 'กรุณาให้คะแนนก่อนส่งรีวิว',
 
+    // Share
+    'share.title': 'แชร์บัญชี',
+    'share.url': 'ลิงก์',
+    'share.button': 'แชร์',
+    'share.copied.title': 'คัดลอกแล้ว',
+    'share.copied.description': 'ลิงก์ถูกคัดลอกไปยังคลิปบอร์ดแล้ว',
+    'share.error.title': 'เกิดข้อผิดพลาด',
+    'share.error.description': 'ไม่สามารถคัดลอกลิงก์ได้',
+    
+    // Rating
+    'rating.title': 'ให้คะแนน',
+    'rating.your.rating': 'คะแนนของคุณ',
+    'rating.submitted': 'ส่งคะแนนแล้ว',
+    'rating.login.required': 'ต้องเข้าสู่ระบบ',
+    'rating.login.required.description': 'กรุณาเข้าสู่ระบบเพื่อให้คะแนน',
+    'rating.login.required.message': 'เข้าสู่ระบบเพื่อให้คะแนนบัญชีนี้',
+    'rating.success.title': 'ส่งคะแนนสำเร็จ',
+    'rating.success.description': 'ขอบคุณสำหรับการให้คะแนน',
+    
+    // Account Detail
+    'account.detail.not.found': 'ไม่พบบัญชี',
+    'account.detail.back.home': 'กลับสู่หน้าแรก',
+    'account.detail.back': 'กลับ',
+    'account.detail.description': 'แนะนำบัญชี',
+    'account.detail.tags': 'แท็ก',
+    'account.detail.location': 'ที่ตั้ง',
+    'account.detail.open.maps': 'เปิดใน Google Maps',
+    'account.detail.stats': 'สถิติ',
+    'account.detail.views': 'การดู',
+    'account.detail.friend.adds': 'เพิ่มเพื่อน',
+    'account.detail.favorites': 'รายการโปรด',
+    'account.detail.rating': 'คะแนน',
+    'account.detail.qr.code': 'QR Code',
+    'account.detail.qr.description': 'สแกน QR Code ด้วยแอป LINE เพื่อเพิ่มเพื่อน',
+    'account.favorites.count': 'รายการโปรด',
+    
     // Manager
     'manager.title': 'แดชบอร์ดผู้จัดการ',
     'manager.description': 'การจัดการบัญชี LINE OA',
@@ -345,6 +381,42 @@ const translations = {
     'review.error.rating.required': 'Rating required',
     'review.error.rating.required.description': 'Please provide a rating before submitting',
 
+    // Share
+    'share.title': 'Share Account',
+    'share.url': 'URL',
+    'share.button': 'Share',
+    'share.copied.title': 'Copied',
+    'share.copied.description': 'Link copied to clipboard',
+    'share.error.title': 'Error',
+    'share.error.description': 'Unable to copy link',
+    
+    // Rating
+    'rating.title': 'Rate Account',
+    'rating.your.rating': 'Your Rating',
+    'rating.submitted': 'Rating Submitted',
+    'rating.login.required': 'Login Required',
+    'rating.login.required.description': 'Please login to rate this account',
+    'rating.login.required.message': 'Login to rate this account',
+    'rating.success.title': 'Rating Submitted',
+    'rating.success.description': 'Thank you for your rating',
+    
+    // Account Detail
+    'account.detail.not.found': 'Account Not Found',
+    'account.detail.back.home': 'Back to Home',
+    'account.detail.back': 'Back',
+    'account.detail.description': 'Account Description',
+    'account.detail.tags': 'Tags',
+    'account.detail.location': 'Location',
+    'account.detail.open.maps': 'Open in Google Maps',
+    'account.detail.stats': 'Statistics',
+    'account.detail.views': 'Views',
+    'account.detail.friend.adds': 'Friend Adds',
+    'account.detail.favorites': 'Favorites',
+    'account.detail.rating': 'Rating',
+    'account.detail.qr.code': 'QR Code',
+    'account.detail.qr.description': 'Scan QR Code with LINE app to add friend',
+    'account.favorites.count': 'favorites',
+    
     // Manager
     'manager.title': 'Manager Dashboard',
     'manager.description': 'LINE OA Account Management',
@@ -542,6 +614,42 @@ const translations = {
     'review.error.rating.required': '評価が必要です',
     'review.error.rating.required.description': '送信前に評価を入力してください',
 
+    // Share
+    'share.title': 'アカウントをシェア',
+    'share.url': 'URL',
+    'share.button': 'シェア',
+    'share.copied.title': 'コピーしました',
+    'share.copied.description': 'リンクをクリップボードにコピーしました',
+    'share.error.title': 'エラー',
+    'share.error.description': 'リンクをコピーできませんでした',
+    
+    // Rating
+    'rating.title': 'アカウントを評価',
+    'rating.your.rating': 'あなたの評価',
+    'rating.submitted': '評価を送信しました',
+    'rating.login.required': 'ログインが必要',
+    'rating.login.required.description': 'このアカウントを評価するにはログインしてください',
+    'rating.login.required.message': 'このアカウントを評価するにはログインしてください',
+    'rating.success.title': '評価を送信しました',
+    'rating.success.description': '評価ありがとうございます',
+    
+    // Account Detail
+    'account.detail.not.found': 'アカウントが見つかりません',
+    'account.detail.back.home': 'ホームに戻る',
+    'account.detail.back': '戻る',
+    'account.detail.description': 'アカウント紹介',
+    'account.detail.tags': 'タグ',
+    'account.detail.location': '場所',
+    'account.detail.open.maps': 'Google Mapsで開く',
+    'account.detail.stats': '統計',
+    'account.detail.views': '閲覧数',
+    'account.detail.friend.adds': '友だち追加',
+    'account.detail.favorites': 'お気に入り',
+    'account.detail.rating': '評価',
+    'account.detail.qr.code': 'QRコード',
+    'account.detail.qr.description': 'LINEアプリでQRコードをスキャンして友だち追加',
+    'account.favorites.count': 'お気に入り',
+    
     // Manager
     'manager.title': 'オーガナイザーダッシュボード',
     'manager.description': 'LINE OAアカウント管理',
