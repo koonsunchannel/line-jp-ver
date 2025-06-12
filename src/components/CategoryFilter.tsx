@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChevronDown } from 'lucide-react';
 
 interface CategoryFilterProps {
@@ -52,18 +53,20 @@ export function CategoryFilter({ selectedCategory, onCategorySelect }: CategoryF
           >
             {t('category.all')}
           </DropdownMenuItem>
-          {categories.map((category) => (
-            <DropdownMenuItem
-              key={category.id}
-              onClick={() => onCategorySelect(category.id)}
-              className={`cursor-pointer hover:bg-gray-50 flex items-center gap-2 text-sm sm:text-base ${
-                selectedCategory === category.id ? 'bg-green-50 text-green-700' : ''
-              }`}
-            >
-              <span>{category.icon}</span>
-              <span>{getCategoryName(category.id)}</span>
-            </DropdownMenuItem>
-          ))}
+          <ScrollArea className="h-64">
+            {categories.map((category) => (
+              <DropdownMenuItem
+                key={category.id}
+                onClick={() => onCategorySelect(category.id)}
+                className={`cursor-pointer hover:bg-gray-50 flex items-center gap-2 text-sm sm:text-base ${
+                  selectedCategory === category.id ? 'bg-green-50 text-green-700' : ''
+                }`}
+              >
+                <span>{category.icon}</span>
+                <span>{getCategoryName(category.id)}</span>
+              </DropdownMenuItem>
+            ))}
+          </ScrollArea>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

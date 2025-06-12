@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '../context/LanguageContext';
 import { UserRegistrationForm } from '../components/UserRegistrationForm';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -71,6 +72,11 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 px-4">
+      {/* Language Switcher in top right */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
+
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
