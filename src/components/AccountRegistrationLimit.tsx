@@ -25,8 +25,8 @@ export function AccountRegistrationLimit({
       {isAtLimit && <AlertTriangle className="h-4 w-4 text-red-600" />}
       <AlertDescription className={`text-sm ${isAtLimit ? 'text-red-700' : isNearLimit ? 'text-orange-700' : 'text-blue-700'}`}>
         {isAtLimit 
-          ? t('manager.limit.reached', { current: currentAccountCount, max: maxAccounts })
-          : t('manager.limit.info', { current: currentAccountCount, max: maxAccounts })
+          ? `${t('manager.limit.reached')} (${currentAccountCount}/${maxAccounts})`
+          : `${t('manager.limit.info')} (${currentAccountCount}/${maxAccounts})`
         }
       </AlertDescription>
     </Alert>

@@ -172,6 +172,8 @@ const translations = {
     'manager.failed': 'ล้มเหลว',
     'manager.export.success': 'ส่งออกข้อมูลสำเร็จ',
     'manager.accounts.limit': 'สามารถสร้างได้สูงสุด 5 บัญชี',
+    'manager.limit.reached': 'ถึงขีดจำกัดการสร้างบัญชีแล้ว',
+    'manager.limit.info': 'จำนวนบัญชีที่สร้างแล้ว',
     'manager.currency.thb': '฿',
     
     // Admin
@@ -367,6 +369,8 @@ const translations = {
     'manager.failed': 'Failed',
     'manager.export.success': 'Data exported successfully',
     'manager.accounts.limit': 'Maximum 5 accounts allowed',
+    'manager.limit.reached': 'Account creation limit reached',
+    'manager.limit.info': 'Accounts created',
     'manager.currency.thb': '฿',
     
     // Admin
@@ -562,6 +566,8 @@ const translations = {
     'manager.failed': '失敗',
     'manager.export.success': 'データのエクスポートが完了しました',
     'manager.accounts.limit': '最大5アカウントまで作成可能',
+    'manager.limit.reached': 'アカウント作成の上限に達しました',
+    'manager.limit.info': '作成済みアカウント数',
     'manager.currency.thb': '฿',
     
     // Admin
