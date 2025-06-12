@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { Home, User, Settings, LogOut, Menu } from 'lucide-react';
+import { Home, User, Settings, LogOut, Menu, MessageCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -12,6 +12,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export function Layout() {
   const { user, logout } = useAuth();
@@ -73,10 +79,10 @@ export function Layout() {
                       <NavItems />
                       {user ? (
                         <div className="border-t pt-4">
-                          <div className="flex items-center gap-2 mb-4">
+                          <Link to="/profile" className="flex items-center gap-2 mb-4 text-gray-700 hover:text-green-600 transition-colors">
                             <User className="w-5 h-5" />
                             <span className="font-medium">{user.name}</span>
-                          </div>
+                          </Link>
                           <Button onClick={handleLogout} variant="ghost" className="w-full justify-start">
                             <LogOut className="w-4 h-4 mr-2" />
                             {t('nav.logout')}
@@ -103,13 +109,26 @@ export function Layout() {
                 
                 {user ? (
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-gray-600" />
-                      <span className="text-sm font-medium text-gray-700">{user.name}</span>
-                    </div>
-                    <Button onClick={handleLogout} variant="ghost" size="sm">
-                      <LogOut className="w-4 h-4" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100">
+                          <User className="w-5 h-5 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem asChild>
+                          <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
+                            <User className="w-4 h-4" />
+                            <span>{t('profile.title')}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
+                          <LogOut className="w-4 h-4" />
+                          <span>{t('nav.logout')}</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 ) : (
                   <Link to="/login">
@@ -123,6 +142,19 @@ export function Layout() {
           </div>
         </div>
       </header>
+
+      {/* Chat Support Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button 
+          className="rounded-full w-14 h-14 bg-blue-500 hover:bg-blue-600 shadow-lg"
+          onClick={() => {
+            // This would typically open a chat widget or redirect to support
+            alert('ระบบแชทสนับสนุน - ติดต่อผู้ดูแลระบบ');
+          }}
+        >
+          <MessageCircle className="w-6 h-6" />
+        </Button>
+      </div>
 
       <main className="flex-1">
         <Outlet />

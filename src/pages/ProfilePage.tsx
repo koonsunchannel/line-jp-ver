@@ -1,15 +1,17 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { mockAccounts } from '../data/mockData';
+import { LineOAAccount } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { User, Settings, Lock, Shield, CheckCircle } from 'lucide-react';
+import { User, Settings, Lock, Shield, CheckCircle, Edit, UserCog } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AccountEditModal } from '../components/AccountEditModal';
 
 export function ProfilePage() {
   const { user } = useAuth();
@@ -19,6 +21,11 @@ export function ProfilePage() {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<LineOAAccount | null>(null);
+  const [showAccountEdit, setShowAccountEdit] = useState(false);
+  const [myAccounts, setMyAccounts] = useState<LineOAAccount[]>(
+    mockAccounts.filter(account => account.ownerId === user?.id)
+  );
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -37,7 +44,6 @@ export function ProfilePage() {
   }
 
   const handleSave = () => {
-    // เปิด Modal ยืนยันตัวตน
     setShowVerificationModal(true);
   };
 
@@ -45,7 +51,6 @@ export function ProfilePage() {
     setIsVerifying(true);
     
     try {
-      // จำลองการยืนยันตัวตน
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (verificationCode === '123456') {
@@ -75,7 +80,6 @@ export function ProfilePage() {
   };
 
   const sendVerificationCode = async () => {
-    // จำลองการส่งรหัสยืนยัน
     toast({
       title: "ส่งรหัสยืนยันแล้ว",
       description: "รหัสยืนยันถูกส่งไปยังอีเมลของคุณแล้ว (ทดสอบ: 123456)",
@@ -91,6 +95,17 @@ export function ProfilePage() {
     }
   };
 
+  const handleEditAccount = (account: LineOAAccount) => {
+    setSelectedAccount(account);
+    setShowAccountEdit(true);
+  };
+
+  const handleSaveAccount = (updatedAccount: LineOAAccount) => {
+    setMyAccounts(prev => prev.map(acc => 
+      acc.id === updatedAccount.id ? updatedAccount : acc
+    ));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -101,7 +116,7 @@ export function ProfilePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Profile Information */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center gap-3 pb-4">
                 <User className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
@@ -176,6 +191,47 @@ export function ProfilePage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* My LINE OA Accounts */}
+            {user.type === 'organizer' && (
+              <Card>
+                <CardHeader className="flex flex-row items-center gap-3 pb-4">
+                  <UserCog className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
+                  <CardTitle className="text-lg sm:text-xl">บัญชี LINE OA ของฉัน</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {myAccounts.map((account) => (
+                      <div key={account.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <img 
+                            src={account.image} 
+                            alt={account.name}
+                            className="w-12 h-12 rounded-lg object-cover"
+                          />
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{account.name}</h3>
+                            <p className="text-sm text-gray-600">{account.category}</p>
+                            <Badge variant="outline" className="text-xs mt-1">
+                              {account.lineId}
+                            </Badge>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={() => handleEditAccount(account)}
+                          variant="outline" 
+                          size="sm"
+                          className="text-sm"
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          แก้ไข
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Security Settings */}
@@ -278,6 +334,19 @@ export function ProfilePage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Account Edit Modal */}
+      {selectedAccount && (
+        <AccountEditModal
+          isOpen={showAccountEdit}
+          onClose={() => {
+            setShowAccountEdit(false);
+            setSelectedAccount(null);
+          }}
+          account={selectedAccount}
+          onSave={handleSaveAccount}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -7,7 +6,7 @@ import { mockAccounts, promotionPackages, mockTransactions } from '../data/mockD
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus } from 'lucide-react';
+import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,6 +16,7 @@ export function OrganizerDashboard() {
   const { toast } = useToast();
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [myAccounts, setMyAccounts] = useState(mockAccounts.filter(account => account.ownerId === user?.id));
 
   if (!user || user.type !== 'organizer') {
     return (
@@ -29,7 +29,6 @@ export function OrganizerDashboard() {
     );
   }
 
-  const myAccounts = mockAccounts.filter(account => account.ownerId === user.id);
   const myTransactions = mockTransactions.filter(t => t.organizerId === user.id);
 
   // Mock analytics data
@@ -46,6 +45,19 @@ export function OrganizerDashboard() {
     setSelectedPackage(packageId);
     const pkg = promotionPackages.find(p => p.id === packageId);
     alert(`${pkg?.name} パッケージの購入手続きを開始します。`);
+  };
+
+  const handleCancelPromotion = (accountId: string) => {
+    setMyAccounts(prev => prev.map(account => 
+      account.id === accountId 
+        ? { ...account, isPromoted: false }
+        : account
+    ));
+    
+    toast({
+      title: "ยกเลิกการโปรโมตสำเร็จ",
+      description: "การโปรโมตได้ถูกยกเลิกเรียบร้อยแล้ว",
+    });
   };
 
   const handleExportExcel = () => {
@@ -254,9 +266,24 @@ export function OrganizerDashboard() {
                       <p className="text-xs text-gray-600">{t('manager.rating')}</p>
                       <p className="font-semibold text-sm">{account.rating}/5.0</p>
                     </div>
-                    {account.isPromoted && (
-                      <Badge className="bg-orange-500 text-xs">{t('manager.promoting')}</Badge>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {account.isPromoted ? (
+                        <>
+                          <Badge className="bg-orange-500 text-xs">{t('manager.promoting')}</Badge>
+                          <Button 
+                            onClick={() => handleCancelPromotion(account.id)}
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 border-red-300 hover:bg-red-50"
+                          >
+                            <XCircle className="w-4 h-4 mr-1" />
+                            ยกเลิก
+                          </Button>
+                        </>
+                      ) : (
+                        <Badge variant="outline" className="text-xs">ไม่ได้โปรโมต</Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
