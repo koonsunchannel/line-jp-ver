@@ -2,19 +2,21 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockAccounts, categories } from '../data/mockData';
-import { Star, Users, MapPin, ExternalLink, ArrowLeft, Eye, UserPlus, Heart, Share2 } from 'lucide-react';
+import { Star, Users, MapPin, ExternalLink, ArrowLeft, Eye, UserPlus, Heart, Share2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '../context/LanguageContext';
 import { RatingSection } from '../components/RatingSection';
 import { ShareModal } from '../components/ShareModal';
+import { ReportModal } from '../components/ReportModal';
 
 export function AccountDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const account = mockAccounts.find(acc => acc.id === id);
 
   if (!account) {
@@ -67,7 +69,7 @@ export function AccountDetailPage() {
               </Badge>
             )}
 
-            <div className="absolute top-4 right-4">
+            <div className="absolute top-4 right-4 flex gap-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -75,6 +77,14 @@ export function AccountDetailPage() {
                 className="bg-white/80 hover:bg-white/90 rounded-full p-2"
               >
                 <Share2 className="w-4 h-4 text-gray-600" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsReportModalOpen(true)}
+                className="bg-red-500/80 hover:bg-red-500/90 rounded-full p-2"
+              >
+                <AlertTriangle className="w-4 h-4 text-white" />
               </Button>
             </div>
 
@@ -223,6 +233,12 @@ export function AccountDetailPage() {
       <ShareModal 
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
+        account={account}
+      />
+
+      <ReportModal 
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
         account={account}
       />
     </div>

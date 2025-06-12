@@ -8,13 +8,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { User, Settings, Lock } from 'lucide-react';
+import { User, Settings, Lock, Shield, CheckCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export function ProfilePage() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
   const [editMode, setEditMode] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -33,11 +37,49 @@ export function ProfilePage() {
   }
 
   const handleSave = () => {
+    // เปิด Modal ยืนยันตัวตน
+    setShowVerificationModal(true);
+  };
+
+  const handleVerification = async () => {
+    setIsVerifying(true);
+    
+    try {
+      // จำลองการยืนยันตัวตน
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (verificationCode === '123456') {
+        toast({
+          title: "บันทึกข้อมูลสำเร็จ",
+          description: "ข้อมูลโปรไฟล์ของคุณได้รับการอัปเดตเรียบร้อยแล้ว",
+        });
+        setEditMode(false);
+        setShowVerificationModal(false);
+        setVerificationCode('');
+      } else {
+        toast({
+          title: "รหัสยืนยันไม่ถูกต้อง",
+          description: "กรุณาตรวจสอบรหัสยืนยันและลองใหม่อีกครั้ง",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถยืนยันตัวตนได้ กรุณาลองใหม่อีกครั้ง",
+        variant: "destructive",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const sendVerificationCode = async () => {
+    // จำลองการส่งรหัสยืนยัน
     toast({
-      title: t('profile.update.success'),
-      description: t('profile.update.success.description'),
+      title: "ส่งรหัสยืนยันแล้ว",
+      description: "รหัสยืนยันถูกส่งไปยังอีเมลของคุณแล้ว (ทดสอบ: 123456)",
     });
-    setEditMode(false);
   };
 
   const getUserTypeDisplay = (type: string) => {
@@ -118,7 +160,8 @@ export function ProfilePage() {
                   {editMode ? (
                     <>
                       <Button onClick={handleSave} className="bg-green-500 hover:bg-green-600 text-sm sm:text-base">
-                        {t('profile.save')}
+                        <Shield className="w-4 h-4 mr-2" />
+                        {t('profile.save')} (ต้องยืนยันตัวตน)
                       </Button>
                       <Button variant="outline" onClick={() => setEditMode(false)} className="text-sm sm:text-base">
                         {t('auth.cancel')}
@@ -155,9 +198,86 @@ export function ProfilePage() {
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Verification Status */}
+            <Card className="mt-4">
+              <CardHeader className="flex flex-row items-center gap-3 pb-4">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
+                <CardTitle className="text-lg sm:text-xl">สถานะการยืนยัน</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-sm sm:text-base text-gray-600">
+                  <p className="mb-3">การแก้ไขข้อมูลโปรไฟล์ต้องยืนยันตัวตนเพื่อความปลอดภัย</p>
+                  <Badge variant="outline" className="text-xs sm:text-sm text-blue-700 bg-blue-50">
+                    ยืนยันผ่านอีเมล
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
+
+      {/* Verification Modal */}
+      <Dialog open={showVerificationModal} onOpenChange={setShowVerificationModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-blue-500" />
+              ยืนยันตัวตนเพื่อบันทึกข้อมูล
+            </DialogTitle>
+            <DialogDescription>
+              เราได้ส่งรหัสยืนยันไปยังอีเมล {user.email} กรุณากรอกรหัสเพื่อยืนยันการเปลี่ยนแปลง
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="verificationCode">รหัสยืนยัน</Label>
+              <Input
+                id="verificationCode"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="กรอกรหัส 6 หลัก"
+                maxLength={6}
+                className="text-center text-lg tracking-widest"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                สำหรับการทดสอบ: ใช้รหัส "123456"
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Button 
+                onClick={handleVerification}
+                disabled={isVerifying || verificationCode.length !== 6}
+                className="bg-green-500 hover:bg-green-600"
+              >
+                {isVerifying ? 'กำลังยืนยัน...' : 'ยืนยันและบันทึก'}
+              </Button>
+              
+              <Button 
+                variant="outline"
+                onClick={sendVerificationCode}
+                className="text-sm"
+              >
+                ส่งรหัสใหม่
+              </Button>
+              
+              <Button 
+                variant="ghost"
+                onClick={() => {
+                  setShowVerificationModal(false);
+                  setVerificationCode('');
+                }}
+                className="text-sm"
+              >
+                ยกเลิก
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

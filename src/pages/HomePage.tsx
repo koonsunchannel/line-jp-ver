@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { CategoryFilter } from '../components/CategoryFilter';
@@ -16,11 +16,28 @@ export function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [shuffledPromotedAccounts, setShuffledPromotedAccounts] = useState<LineOAAccount[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
 
   const approvedAccounts = mockAccounts.filter(account => account.verificationStatus === 'approved');
+  
+  // Shuffle function
+  const shuffleArray = (array: LineOAAccount[]) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // Shuffle promoted accounts on component mount
+  useEffect(() => {
+    const promotedAccounts = approvedAccounts.filter(account => account.isPromoted);
+    setShuffledPromotedAccounts(shuffleArray(promotedAccounts));
+  }, []);
   
   const filteredAccounts = useMemo(() => {
     let filtered = approvedAccounts;
@@ -45,7 +62,6 @@ export function HomePage() {
     });
   }, [searchQuery, selectedCategory, approvedAccounts]);
 
-  const promotedAccounts = approvedAccounts.filter(account => account.isPromoted);
   const popularAccounts = approvedAccounts
     .sort((a, b) => b.followers - a.followers)
     .slice(0, 6);
@@ -126,7 +142,7 @@ export function HomePage() {
 
         {!searchQuery && !selectedCategory && (
           <>
-            {/* Promoted Accounts Carousel */}
+            {/* Promoted Accounts Carousel - Now shuffled */}
             <section className="mb-8 sm:mb-12 md:mb-16">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -138,7 +154,7 @@ export function HomePage() {
                 </Badge>
               </div>
               <AccountCarousel
-                accounts={promotedAccounts.slice(0, 6)}
+                accounts={shuffledPromotedAccounts.slice(0, 6)}
                 onAccountClick={handleAccountClick}
                 onFavorite={handleFavorite}
                 favorites={favorites}
