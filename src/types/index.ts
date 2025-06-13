@@ -1,3 +1,4 @@
+
 export interface LineOAAccount {
   id: string;
   name: string;
@@ -46,6 +47,27 @@ export interface Transaction {
   amount: number;
   status: 'completed' | 'pending' | 'failed';
   date: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderType: 'general' | 'organizer' | 'admin';
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+}
+
+export interface ChatConversation {
+  id: string;
+  participantId: string;
+  participantName: string;
+  participantType: 'general' | 'organizer';
+  messages: ChatMessage[];
+  lastMessage: string;
+  lastMessageTime: string;
+  unreadCount: number;
 }
 
 export type UserType = 'general' | 'organizer' | 'admin';

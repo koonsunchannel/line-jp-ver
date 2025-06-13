@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { Home, User, Settings, LogOut, Menu, MessageCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ChatWindow } from './ChatWindow';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
@@ -24,6 +25,7 @@ export function Layout() {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -45,10 +47,16 @@ export function Layout() {
       )}
       
       {user?.type === 'admin' && (
-        <Link to="/admin" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
-          <Settings className="w-5 h-5" />
-          <span>{t('nav.management')}</span>
-        </Link>
+        <>
+          <Link to="/admin" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
+            <Settings className="w-5 h-5" />
+            <span>{t('nav.management')}</span>
+          </Link>
+          <Link to="/admin/chat" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
+            <MessageCircle className="w-5 h-5" />
+            <span>ระบบแชท</span>
+          </Link>
+        </>
       )}
     </>
   );
@@ -143,18 +151,27 @@ export function Layout() {
         </div>
       </header>
 
-      {/* Chat Support Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button 
-          className="rounded-full w-14 h-14 bg-blue-500 hover:bg-blue-600 shadow-lg"
-          onClick={() => {
-            // This would typically open a chat widget or redirect to support
-            alert('ระบบแชทสนับสนุน - ติดต่อผู้ดูแลระบบ');
-          }}
-        >
-          <MessageCircle className="w-6 h-6" />
-        </Button>
-      </div>
+      {/* Chat Support Buttons */}
+      {user && user.type !== 'admin' && (
+        <div className="fixed bottom-6 right-6 z-40">
+          <Button 
+            className={`rounded-full w-14 h-14 shadow-lg ${
+              user.type === 'organizer' 
+                ? 'bg-green-500 hover:bg-green-600' 
+                : 'bg-blue-500 hover:bg-blue-600'
+            }`}
+            onClick={() => setIsChatOpen(!isChatOpen)}
+          >
+            <MessageCircle className="w-6 h-6" />
+          </Button>
+        </div>
+      )}
+
+      {/* Chat Window */}
+      <ChatWindow 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)} 
+      />
 
       <main className="flex-1">
         <Outlet />
