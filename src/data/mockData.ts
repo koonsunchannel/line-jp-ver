@@ -1,4 +1,3 @@
-
 import { LineOAAccount, PromotionPackage, Transaction } from '../types';
 
 export const categories = [
@@ -33,7 +32,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org1',
     createdAt: '2024-01-15',
     views: 2500,
-    friendAdds: 450
+    friendAdds: 450,
+    lineId: '@tokyo-ramen-yokocho'
   },
   {
     id: '2',
@@ -55,7 +55,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org2',
     createdAt: '2024-02-01',
     views: 1800,
-    friendAdds: 320
+    friendAdds: 320,
+    lineId: '@kyoto-travel-guide'
   },
   {
     id: '3',
@@ -77,7 +78,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org3',
     createdAt: '2024-01-20',
     views: 3200,
-    friendAdds: 680
+    friendAdds: 680,
+    lineId: '@beauty-salon-sakura'
   },
   {
     id: '4',
@@ -99,7 +101,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org4',
     createdAt: '2024-02-10',
     views: 1500,
-    friendAdds: 280
+    friendAdds: 280,
+    lineId: '@fitness-club-strong'
   },
   {
     id: '5',
@@ -121,7 +124,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org5',
     createdAt: '2024-01-05',
     views: 2800,
-    friendAdds: 520
+    friendAdds: 520,
+    lineId: '@online-english-speak'
   },
   {
     id: '6',
@@ -138,7 +142,8 @@ export const mockAccounts: LineOAAccount[] = [
     createdAt: '2024-03-01',
     views: 890,
     friendAdds: 125,
-    tags: ['カフェ', 'WiFi', '自家焙煎']
+    tags: ['カフェ', 'WiFi', '自家焙煎'],
+    lineId: '@cafe-moon'
   },
   {
     id: '7',
@@ -160,7 +165,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org7',
     createdAt: '2024-01-25',
     views: 4200,
-    friendAdds: 850
+    friendAdds: 850,
+    lineId: '@anime-shop-otaku'
   },
   {
     id: '8',
@@ -182,7 +188,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org8',
     createdAt: '2024-02-15',
     views: 1900,
-    friendAdds: 380
+    friendAdds: 380,
+    lineId: '@fashion-style'
   },
   {
     id: '9',
@@ -204,7 +211,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org9',
     createdAt: '2024-02-20',
     views: 650,
-    friendAdds: 95
+    friendAdds: 95,
+    lineId: '@consulting-pro'
   },
   {
     id: '10',
@@ -226,7 +234,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org10',
     createdAt: '2024-01-30',
     views: 2200,
-    friendAdds: 420
+    friendAdds: 420,
+    lineId: '@pet-salon-fluffy'
   },
   {
     id: '11',
@@ -248,7 +257,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org11',
     createdAt: '2024-01-10',
     views: 3100,
-    friendAdds: 590
+    friendAdds: 590,
+    lineId: '@osaka-okonomiyaki'
   },
   {
     id: '12',
@@ -270,7 +280,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org12',
     createdAt: '2024-02-05',
     views: 1750,
-    friendAdds: 310
+    friendAdds: 310,
+    lineId: '@yoga-studio-zen'
   },
   {
     id: '13',
@@ -287,7 +298,8 @@ export const mockAccounts: LineOAAccount[] = [
     createdAt: '2024-03-05',
     views: 1200,
     friendAdds: 180,
-    tags: ['プログラミング', '転職', 'エンジニア']
+    tags: ['プログラミング', '転職', 'エンジニア'],
+    lineId: '@programming-school'
   },
   {
     id: '14',
@@ -309,7 +321,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org14',
     createdAt: '2024-01-12',
     views: 1600,
-    friendAdds: 240
+    friendAdds: 240,
+    lineId: '@yamaguchi-onsen'
   },
   {
     id: '15',
@@ -331,7 +344,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org15',
     createdAt: '2024-02-25',
     views: 2400,
-    friendAdds: 450
+    friendAdds: 450,
+    lineId: '@game-center-play'
   },
   {
     id: '16',
@@ -353,7 +367,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org16',
     createdAt: '2024-01-22',
     views: 1300,
-    friendAdds: 250
+    friendAdds: 250,
+    lineId: '@accessory-shine'
   },
   {
     id: '17',
@@ -370,7 +385,8 @@ export const mockAccounts: LineOAAccount[] = [
     createdAt: '2024-03-10',
     views: 580,
     friendAdds: 85,
-    tags: ['マーケティング', 'SNS', 'Web広告']
+    tags: ['マーケティング', 'SNS', 'Web広告'],
+    lineId: '@marketing-boost'
   },
   {
     id: '18',
@@ -392,7 +408,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org18',
     createdAt: '2024-01-18',
     views: 2100,
-    friendAdds: 390
+    friendAdds: 390,
+    lineId: '@sweets-cafe-sweet'
   },
   {
     id: '19',
@@ -414,7 +431,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org19',
     createdAt: '2024-02-12',
     views: 1850,
-    friendAdds: 320
+    friendAdds: 320,
+    lineId: '@nail-salon-nail'
   },
   {
     id: '20',
@@ -436,7 +454,8 @@ export const mockAccounts: LineOAAccount[] = [
     ownerId: 'org20',
     createdAt: '2024-02-08',
     views: 980,
-    friendAdds: 150
+    friendAdds: 150,
+    lineId: '@music-school-melody'
   }
 ];
 
