@@ -1,4 +1,3 @@
-
 export interface LineOAAccount {
   id: string;
   name: string;
@@ -20,6 +19,7 @@ export interface LineOAAccount {
   createdAt: string;
   views: number;
   friendAdds: number;
+  lineId: string;
 }
 
 export interface User {
