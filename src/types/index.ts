@@ -21,6 +21,7 @@ export interface LineOAAccount {
   views: number;
   friendAdds: number;
   lineId: string;
+  isVerified?: boolean; // New field for LINE OA verification
 }
 
 export interface User {

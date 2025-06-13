@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle, Upload } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { LineOAAccount } from '../types';
 import { categories } from '../data/updatedCategories';
@@ -20,6 +22,8 @@ interface AccountEditFormProps {
 export function AccountEditForm({ isOpen, onClose, account, onSave }: AccountEditFormProps) {
   const { t } = useLanguage();
   const [formData, setFormData] = useState<Partial<LineOAAccount>>(account || {});
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [qrCodeFile, setQrCodeFile] = useState<File | null>(null);
 
   React.useEffect(() => {
     if (account) {
@@ -30,13 +34,59 @@ export function AccountEditForm({ isOpen, onClose, account, onSave }: AccountEdi
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (account && formData) {
-      onSave({ ...account, ...formData } as LineOAAccount);
+      // Handle image uploads here (in a real app, you'd upload to a server)
+      const updatedAccount = { ...account, ...formData } as LineOAAccount;
+      onSave(updatedAccount);
       onClose();
     }
   };
 
   const handleInputChange = (field: keyof LineOAAccount, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'qrCode') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (type === 'image') {
+        setImageFile(file);
+        // Create a preview URL
+        const previewUrl = URL.createObjectURL(file);
+        handleInputChange('image', previewUrl);
+      } else {
+        setQrCodeFile(file);
+        const previewUrl = URL.createObjectURL(file);
+        handleInputChange('qrCode', previewUrl);
+      }
+    }
+  };
+
+  const getCategoryName = (categoryId: string) => {
+    const categoryNames: { [key: string]: string } = {
+      'expert': 'ผู้เชี่ยวชาญ',
+      'restaurant': 'ร้านอาหาร',
+      'transportation': 'การขนส่ง',
+      'realestate': 'อสังหาริมทรัพย์',
+      'education': 'การศึกษา',
+      'travel': 'การท่องเที่ยว',
+      'entertainment': 'บันเทิง',
+      'health': 'สุขภาพ',
+      'beauty': 'ความงาม',
+      'organization': 'องค์กร',
+      'government': 'รัฐบาล',
+      'service': 'บริการ',
+      'retail': 'ค้าปลีก',
+      'localbusiness': 'ธุรกิจท้องถิ่น',
+      'corporate': 'บริษัท',
+      'brand': 'แบรนด์',
+      'media': 'สื่อ',
+      'movie': 'ภาพยนตร์',
+      'music': 'ดนตรี',
+      'sports': 'กีฬา',
+      'tv': 'โทรทัศน์',
+      'website': 'เว็บไซต์'
+    };
+    return categoryNames[categoryId] || categoryId;
   };
 
   if (!account) return null;
@@ -47,6 +97,14 @@ export function AccountEditForm({ isOpen, onClose, account, onSave }: AccountEdi
         <DialogHeader>
           <DialogTitle>{t('account.edit.title') || 'แก้ไขข้อมูลบัญชี'}</DialogTitle>
         </DialogHeader>
+        
+        {/* Warning Alert */}
+        <Alert className="border-orange-200 bg-orange-50">
+          <AlertTriangle className="h-4 w-4 text-orange-600" />
+          <AlertDescription className="text-orange-800">
+            {t('account.verification.warning') || 'หากไม่ทำการยืนยันตัวตนของบัญชี LINE OA ภายใน 14 วัน ทางผู้ดูแลระบบสามารถลบบัญชี OA นี้ออกจากระบบได้'}
+          </AlertDescription>
+        </Alert>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -93,34 +151,16 @@ export function AccountEditForm({ isOpen, onClose, account, onSave }: AccountEdi
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      className="text-black"
+                    >
+                      {category.icon} {getCategoryName(category.id)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="image">{t('account.edit.image') || 'รูปภาพ URL'}</Label>
-              <Input
-                id="image"
-                value={formData.image || ''}
-                onChange={(e) => handleInputChange('image', e.target.value)}
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="qrCode">{t('account.edit.qrCode') || 'QR Code URL'}</Label>
-              <Input
-                id="qrCode"
-                value={formData.qrCode || ''}
-                onChange={(e) => handleInputChange('qrCode', e.target.value)}
-                placeholder="https://example.com/qr.jpg"
-              />
             </div>
 
             <div>
@@ -135,48 +175,78 @@ export function AccountEditForm({ isOpen, onClose, account, onSave }: AccountEdi
             </div>
           </div>
 
-          {/* Location */}
-          {formData.location && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="address">{t('account.edit.address') || 'ที่อยู่'}</Label>
-                <Input
-                  id="address"
-                  value={formData.location.address || ''}
-                  onChange={(e) => handleInputChange('location', { 
-                    ...formData.location, 
-                    address: e.target.value 
-                  })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="lat">{t('account.edit.latitude') || 'ละติจูด'}</Label>
-                <Input
-                  id="lat"
-                  type="number"
-                  step="any"
-                  value={formData.location.lat || 0}
-                  onChange={(e) => handleInputChange('location', { 
-                    ...formData.location, 
-                    lat: parseFloat(e.target.value) || 0 
-                  })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="lng">{t('account.edit.longitude') || 'ลองติจูด'}</Label>
-                <Input
-                  id="lng"
-                  type="number"
-                  step="any"
-                  value={formData.location.lng || 0}
-                  onChange={(e) => handleInputChange('location', { 
-                    ...formData.location, 
-                    lng: parseFloat(e.target.value) || 0 
-                  })}
-                />
+          {/* Image Upload */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="image">{t('account.edit.image') || 'รูปภาพ'}</Label>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'image')}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('image')?.click()}
+                    className="w-full"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {t('account.upload.image') || 'อัพโหลดรูปภาพ'}
+                  </Button>
+                </div>
+                {formData.image && (
+                  <img src={formData.image} alt="Preview" className="w-20 h-20 object-cover rounded" />
+                )}
               </div>
             </div>
-          )}
+
+            <div>
+              <Label htmlFor="qrCode">{t('account.edit.qrCode') || 'QR Code'}</Label>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Input
+                    id="qrCode"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'qrCode')}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('qrCode')?.click()}
+                    className="w-full"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {t('account.upload.qrcode') || 'อัพโหลด QR Code'}
+                  </Button>
+                </div>
+                {formData.qrCode && (
+                  <img src={formData.qrCode} alt="QR Preview" className="w-20 h-20 object-cover rounded" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Google Maps Link */}
+          <div>
+            <Label htmlFor="googleMaps">{t('account.edit.googlemaps') || 'ลิ้ง Google Maps'}</Label>
+            <Input
+              id="googleMaps"
+              value={formData.location?.address || ''}
+              onChange={(e) => handleInputChange('location', { 
+                ...formData.location, 
+                address: e.target.value,
+                lat: 0,
+                lng: 0
+              })}
+              placeholder="https://maps.google.com/..."
+            />
+          </div>
 
           {/* Tags */}
           <div>
