@@ -1,11 +1,12 @@
 
 import React, { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { Home, User, Settings, LogOut, Menu, MessageCircle } from 'lucide-react';
+import { Home, User, Settings, LogOut, Menu, MessageCircle, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ChatWindow } from './ChatWindow';
+import { ChatNotificationBadge } from './ChatNotificationBadge';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
@@ -52,9 +53,14 @@ export function Layout() {
             <Settings className="w-5 h-5" />
             <span>{t('nav.management')}</span>
           </Link>
-          <Link to="/admin/chat" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
+          <Link to="/admin/chat" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors relative">
             <MessageCircle className="w-5 h-5" />
             <span>ระบบแชท</span>
+            <ChatNotificationBadge />
+          </Link>
+          <Link to="/admin/verification" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
+            <Shield className="w-5 h-5" />
+            <span>{t('verification.admin.title') || 'ตรวจสอบการยืนยัน'}</span>
           </Link>
         </>
       )}
@@ -119,9 +125,10 @@ export function Layout() {
                   <div className="flex items-center gap-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100">
+                        <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100 relative">
                           <User className="w-5 h-5 text-gray-600" />
                           <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                          {user.type === 'admin' && <ChatNotificationBadge />}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">

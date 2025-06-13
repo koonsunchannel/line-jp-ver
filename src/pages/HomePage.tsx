@@ -1,253 +1,105 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SearchBar } from '../components/SearchBar';
-import { CategoryFilter } from '../components/CategoryFilter';
-import { AccountCard } from '../components/AccountCard';
-import { AccountCarousel } from '../components/AccountCarousel';
-import { mockAccounts, categories } from '../data/mockData';
-import { LineOAAccount } from '../types';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, TrendingUp, Star } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate, useEffect } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
 export function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [shuffledPromotedAccounts, setShuffledPromotedAccounts] = useState<LineOAAccount[]>([]);
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { t } = useLanguage();
 
-  const approvedAccounts = mockAccounts.filter(account => account.verificationStatus === 'approved');
-  
-  // Shuffle function
-  const shuffleArray = (array: LineOAAccount[]) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
-  // Shuffle promoted accounts on component mount
   useEffect(() => {
-    const promotedAccounts = approvedAccounts.filter(account => account.isPromoted);
-    setShuffledPromotedAccounts(shuffleArray(promotedAccounts));
-  }, []);
-  
-  const filteredAccounts = useMemo(() => {
-    let filtered = approvedAccounts;
-
-    if (searchQuery) {
-      filtered = filtered.filter(account =>
-        account.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        account.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        account.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
+    // Redirect admin and organizer users to their respective dashboards
+    if (user) {
+      if (user.type === 'admin') {
+        navigate('/admin');
+      } else if (user.type === 'organizer') {
+        navigate('/organizer');
+      }
     }
+  }, [user, navigate]);
 
-    if (selectedCategory) {
-      filtered = filtered.filter(account => account.category === selectedCategory);
-    }
-
-    // Sort promoted accounts first within any category/filter
-    return filtered.sort((a, b) => {
-      if (a.isPromoted && !b.isPromoted) return -1;
-      if (!a.isPromoted && b.isPromoted) return 1;
-      return 0;
-    });
-  }, [searchQuery, selectedCategory, approvedAccounts]);
-
-  const popularAccounts = approvedAccounts
-    .sort((a, b) => b.followers - a.followers)
-    .slice(0, 6);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
-  const handleLocationSearch = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          toast({
-            title: t('search.location.success'),
-            description: t('search.location.searching'),
-          });
-        },
-        (error) => {
-          toast({
-            title: t('search.location.error'),
-            description: t('search.location.error'),
-            variant: "destructive",
-          });
-        }
-      );
-    } else {
-      toast({
-        title: t('search.location.browser.error'),
-        description: t('search.location.browser.error'),
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleAccountClick = (account: LineOAAccount) => {
-    navigate(`/account/${account.id}`);
-  };
-
-  const handleFavorite = (accountId: string) => {
-    setFavorites(prev => 
-      prev.includes(accountId)
-        ? prev.filter(id => id !== accountId)
-        : [...prev, accountId]
-    );
-  };
-
-  const getCategoryName = (categoryId: string) => {
-    return t(`category.${categoryId}`);
-  };
-
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section - Enhanced mobile responsiveness */}
-      <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-8 sm:py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            {t('home.hero.title')}
-            <br />
-            <span className="text-yellow-300">{t('home.hero.subtitle')}</span>
+  // If user is admin or organizer, show loading or redirect message
+  if (user && (user.type === 'admin' || user.type === 'organizer')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
+            {t('redirect.title') || 'กำลังนำทางไปยังหน้าจัดการ...'}
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-green-100 px-4">
-            {t('home.hero.description')}
+          <p className="text-gray-600 text-sm md:text-base">
+            {t('redirect.description') || 'กรุณารอสักครู่'}
           </p>
-          <div className="w-full max-w-2xl mx-auto">
-            <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
+        </div>
+      </div>
+    );
+  }
+
+  // Original HomePage content for general users
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            {t('home.title') || 'ค้นหา LINE OA ที่ใช่สำหรับคุณ'}
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            {t('home.subtitle') || 'แพลตฟอร์มที่รวบรวมบัญชี LINE Official Account คุณภาพสูง เพื่อให้คุณเชื่อมต่อกับผู้ให้บริการที่เหมาะสม'}
+          </p>
+        </div>
+
+        {/* Search Section */}
+        <div className="mb-12">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <input
+                type="text"
+                placeholder={t('search.placeholder') || 'ค้นหาชื่อ, หมวดหมู่, หรือคำอธิบาย...'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
           </div>
         </div>
-      </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 md:py-12">
-        {/* Category Filter - Enhanced mobile layout */}
-        <div className="mb-6 sm:mb-8">
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            onCategorySelect={setSelectedCategory}
-          />
+        {/* Categories */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-center mb-8">
+            {t('categories.title') || 'หมวดหมู่ยอดนิยม'}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {['ร้านอาหาร', 'แฟชั่น', 'ความงาม', 'เทคโนโลยี', 'การศึกษา', 'สุขภาพ'].map((category) => (
+              <div key={category} className="bg-white rounded-lg p-4 text-center shadow hover:shadow-md transition-shadow cursor-pointer">
+                <div className="w-12 h-12 bg-green-100 rounded-full mx-auto mb-2 flex items-center justify-center">
+                  <span className="text-green-600 text-xl">🏪</span>
+                </div>
+                <span className="text-sm font-medium text-gray-900">{category}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {!searchQuery && !selectedCategory && (
-          <>
-            {/* Promoted Accounts Carousel - Now shuffled */}
-            <section className="mb-8 sm:mb-12 md:mb-16">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{t('home.promoted.title')}</h2>
+        {/* Featured Accounts */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-center mb-8">
+            {t('featured.title') || 'บัญชียอดนิยม'}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="h-48 bg-gray-200"></div>
+                <div className="p-6">
+                  <h3 className="font-bold text-lg mb-2">ตัวอย่างบัญชี {i}</h3>
+                  <p className="text-gray-600 mb-4">คำอธิบายสั้นๆ เกี่ยวกับบัญชีนี้</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">⭐ 4.8</span>
+                    <span className="text-sm text-gray-500">👥 10K</span>
+                  </div>
                 </div>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-700 text-xs sm:text-sm">
-                  {t('home.promoted.badge')}
-                </Badge>
               </div>
-              <AccountCarousel
-                accounts={shuffledPromotedAccounts.slice(0, 6)}
-                onAccountClick={handleAccountClick}
-                onFavorite={handleFavorite}
-                favorites={favorites}
-              />
-            </section>
-
-            {/* Popular Accounts Carousel */}
-            <section className="mb-8 sm:mb-12 md:mb-16">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{t('home.popular.title')}</h2>
-                </div>
-                <Badge variant="secondary" className="bg-red-100 text-red-700 text-xs sm:text-sm">
-                  {t('home.popular.badge')}
-                </Badge>
-              </div>
-              <AccountCarousel
-                accounts={popularAccounts}
-                onAccountClick={handleAccountClick}
-                onFavorite={handleFavorite}
-                favorites={favorites}
-              />
-            </section>
-
-            {/* All LINE OA Accounts Carousel */}
-            <section className="mb-8 sm:mb-12 md:mb-16">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <Star className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">{t('home.all.accounts.title')}</h2>
-                </div>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs sm:text-sm">
-                  {t('home.all.accounts.badge')}
-                </Badge>
-              </div>
-              <AccountCarousel
-                accounts={approvedAccounts}
-                onAccountClick={handleAccountClick}
-                onFavorite={handleFavorite}
-                favorites={favorites}
-              />
-            </section>
-          </>
-        )}
-
-        {/* Search Results or Category Results */}
-        {(searchQuery || selectedCategory) && (
-          <section>
-            <div className="mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                {searchQuery ? `${t('home.search.results')} "${searchQuery}"` : 
-                 selectedCategory ? `${t('home.category.results')} ${getCategoryName(selectedCategory)}` : 
-                 t('home.all.accounts.title')}
-              </h2>
-              <p className="text-sm sm:text-base text-gray-600">
-                {t('home.results.found')} {filteredAccounts.length} {t('home.results.accounts')}
-              </p>
-            </div>
-            
-            {/* Use carousel for category results, grid for search */}
-            {selectedCategory && !searchQuery ? (
-              <AccountCarousel
-                accounts={filteredAccounts}
-                onAccountClick={handleAccountClick}
-                onFavorite={handleFavorite}
-                favorites={favorites}
-              />
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {filteredAccounts.map((account) => (
-                  <AccountCard
-                    key={account.id}
-                    account={account}
-                    onClick={() => handleAccountClick(account)}
-                    onFavorite={() => handleFavorite(account.id)}
-                    isFavorited={favorites.includes(account.id)}
-                  />
-                ))}
-              </div>
-            )}
-
-            {filteredAccounts.length === 0 && (
-              <div className="text-center py-12 sm:py-16">
-                <div className="text-4xl sm:text-6xl mb-4">🔍</div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2">
-                  {t('home.no.results.title')}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600">{t('home.no.results.description')}</p>
-              </div>
-            )}
-          </section>
-        )}
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

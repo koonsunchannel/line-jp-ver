@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useVerification } from '../context/VerificationContext';
 import { AccountRegistrationForm } from '../components/AccountRegistrationForm';
 import { AccountEditForm } from '../components/AccountEditForm';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { LineOAVerificationForm } from '../components/LineOAVerificationForm';
+import { VerificationStatusBadge } from '../components/VerificationStatusBadge';
 import { mockAccounts, promotionPackages, mockTransactions } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle, Edit, Trash2 } from 'lucide-react';
+import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle, Edit, Trash2, Shield } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 import { LineOAAccount } from '../types';
@@ -17,6 +20,7 @@ export function OrganizerDashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { getUserVerifications } = useVerification();
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -25,6 +29,8 @@ export function OrganizerDashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetAccount, setTargetAccount] = useState<LineOAAccount | null>(null);
   const [myAccounts, setMyAccounts] = useState(mockAccounts.filter(account => account.ownerId === user?.id));
+  const [showVerificationForm, setShowVerificationForm] = useState(false);
+  const [verificationAccountName, setVerificationAccountName] = useState('');
 
   if (!user || user.type !== 'organizer') {
     return (
@@ -38,6 +44,14 @@ export function OrganizerDashboard() {
   }
 
   const myTransactions = mockTransactions.filter(t => t.organizerId === user.id);
+  const userVerifications = getUserVerifications(user.id);
+
+  // Get verification status for an account
+  const getAccountVerificationStatus = (accountId: string) => {
+    const account = myAccounts.find(acc => acc.id === accountId);
+    const verification = userVerifications.find(v => v.accountName === account?.name);
+    return verification?.status === 'approved';
+  };
 
   // Mock analytics data
   const analyticsData = [
@@ -115,6 +129,11 @@ export function OrganizerDashboard() {
       });
       setTargetAccount(null);
     }
+  };
+
+  const handleVerifyAccount = (accountName: string) => {
+    setVerificationAccountName(accountName);
+    setShowVerificationForm(true);
   };
 
   const handleExportExcel = () => {
@@ -290,7 +309,7 @@ export function OrganizerDashboard() {
           </Card>
         </div>
 
-        {/* My Accounts */}
+        {/* My Accounts with Verification */}
         <Card className="mb-6 md:mb-8">
           <CardHeader>
             <CardTitle className="text-base md:text-lg">{t('manager.my.accounts')}</CardTitle>
@@ -306,7 +325,10 @@ export function OrganizerDashboard() {
                       className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover"
                     />
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-base">{account.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-gray-900 text-sm md:text-base">{account.name}</h3>
+                        <VerificationStatusBadge isVerified={getAccountVerificationStatus(account.id)} />
+                      </div>
                       <p className="text-xs md:text-sm text-gray-600">{account.category}</p>
                     </div>
                   </div>
@@ -342,6 +364,19 @@ export function OrganizerDashboard() {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button 
+                        onClick={() => handleVerifyAccount(account.name)}
+                        variant="outline"
+                        size="sm"
+                        className="text-green-600 border-green-300 hover:bg-green-50"
+                        disabled={getAccountVerificationStatus(account.id)}
+                      >
+                        <Shield className="w-4 h-4 mr-1" />
+                        {getAccountVerificationStatus(account.id) 
+                          ? (t('verification.verified') || 'ยืนยันแล้ว')
+                          : (t('verification.verify') || 'ยืนยันตัวตน')
+                        }
+                      </Button>
                       <Button 
                         onClick={() => handleEditAccount(account)}
                         variant="outline"
@@ -466,6 +501,15 @@ export function OrganizerDashboard() {
           }}
           account={editingAccount}
           onSave={handleSaveAccount}
+        />
+
+        <LineOAVerificationForm
+          isOpen={showVerificationForm}
+          onClose={() => {
+            setShowVerificationForm(false);
+            setVerificationAccountName('');
+          }}
+          accountName={verificationAccountName}
         />
 
         <ConfirmationModal
