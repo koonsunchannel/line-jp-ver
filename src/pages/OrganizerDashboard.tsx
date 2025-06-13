@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { AccountRegistrationForm } from '../components/AccountRegistrationForm';
+import { AccountEditForm } from '../components/AccountEditForm';
+import { ConfirmationModal } from '../components/ConfirmationModal';
 import { mockAccounts, promotionPackages, mockTransactions } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle } from 'lucide-react';
+import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle, Edit, Trash2 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
+import { LineOAAccount } from '../types';
 
 export function OrganizerDashboard() {
   const { user } = useAuth();
@@ -16,6 +19,11 @@ export function OrganizerDashboard() {
   const { toast } = useToast();
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<LineOAAccount | null>(null);
+  const [showCancelPromotionModal, setShowCancelPromotionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [targetAccount, setTargetAccount] = useState<LineOAAccount | null>(null);
   const [myAccounts, setMyAccounts] = useState(mockAccounts.filter(account => account.ownerId === user?.id));
 
   if (!user || user.type !== 'organizer') {
@@ -47,17 +55,66 @@ export function OrganizerDashboard() {
     alert(`${pkg?.name} パッケージの購入手続きを開始します。`);
   };
 
-  const handleCancelPromotion = (accountId: string) => {
+  const handleEditAccount = (account: LineOAAccount) => {
+    setEditingAccount(account);
+    setShowEditForm(true);
+  };
+
+  const handleSaveAccount = (updatedAccount: LineOAAccount) => {
     setMyAccounts(prev => prev.map(account => 
-      account.id === accountId 
-        ? { ...account, isPromoted: false }
-        : account
+      account.id === updatedAccount.id ? updatedAccount : account
     ));
     
     toast({
-      title: "ยกเลิกการโปรโมตสำเร็จ",
-      description: "การโปรโมตได้ถูกยกเลิกเรียบร้อยแล้ว",
+      title: t('account.edit.success') || 'อัปเดตข้อมูลสำเร็จ',
+      description: t('account.edit.success.description') || 'ข้อมูลบัญชีได้รับการอัปเดตแล้ว',
     });
+  };
+
+  const handleDeleteAccount = (account: LineOAAccount) => {
+    if (account.isPromoted) {
+      toast({
+        title: t('account.delete.promoted.error') || 'ไม่สามารถลบบัญชีที่กำลังโปรโมทได้',
+        description: t('account.delete.promoted.description') || 'กรุณายกเลิกการโปรโมทก่อนลบบัญชี',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    setTargetAccount(account);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteAccount = () => {
+    if (targetAccount) {
+      setMyAccounts(prev => prev.filter(account => account.id !== targetAccount.id));
+      toast({
+        title: t('account.delete.success') || 'ลบบัญชีสำเร็จ',
+        description: t('account.delete.success.description') || 'บัญชีได้ถูกลบออกจากระบบแล้ว',
+      });
+      setTargetAccount(null);
+    }
+  };
+
+  const handleCancelPromotion = (account: LineOAAccount) => {
+    setTargetAccount(account);
+    setShowCancelPromotionModal(true);
+  };
+
+  const confirmCancelPromotion = () => {
+    if (targetAccount) {
+      setMyAccounts(prev => prev.map(account => 
+        account.id === targetAccount.id 
+          ? { ...account, isPromoted: false }
+          : account
+      ));
+      
+      toast({
+        title: t('account.promotion.cancel.success') || 'ยกเลิกการโปรโมตสำเร็จ',
+        description: t('account.promotion.cancel.success.description') || 'การโปรโมตได้ถูกยกเลิกเรียบร้อยแล้ว',
+      });
+      setTargetAccount(null);
+    }
   };
 
   const handleExportExcel = () => {
@@ -271,18 +328,39 @@ export function OrganizerDashboard() {
                         <>
                           <Badge className="bg-orange-500 text-xs">{t('manager.promoting')}</Badge>
                           <Button 
-                            onClick={() => handleCancelPromotion(account.id)}
+                            onClick={() => handleCancelPromotion(account)}
                             variant="outline"
                             size="sm"
                             className="text-red-600 border-red-300 hover:bg-red-50"
                           >
                             <XCircle className="w-4 h-4 mr-1" />
-                            ยกเลิก
+                            {t('common.cancel') || 'ยกเลิก'}
                           </Button>
                         </>
                       ) : (
                         <Badge variant="outline" className="text-xs">ไม่ได้โปรโมต</Badge>
                       )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        onClick={() => handleEditAccount(account)}
+                        variant="outline"
+                        size="sm"
+                        className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        {t('common.edit') || 'แก้ไข'}
+                      </Button>
+                      <Button 
+                        onClick={() => handleDeleteAccount(account)}
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 border-red-300 hover:bg-red-50"
+                        disabled={account.isPromoted}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        {t('common.delete') || 'ลบ'}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -373,10 +451,49 @@ export function OrganizerDashboard() {
           </Card>
         </div>
 
+        {/* Modals */}
         <AccountRegistrationForm
           isOpen={showRegistrationForm}
           onClose={() => setShowRegistrationForm(false)}
           onSubmit={handleRegistrationSubmit}
+        />
+
+        <AccountEditForm
+          isOpen={showEditForm}
+          onClose={() => {
+            setShowEditForm(false);
+            setEditingAccount(null);
+          }}
+          account={editingAccount}
+          onSave={handleSaveAccount}
+        />
+
+        <ConfirmationModal
+          isOpen={showCancelPromotionModal}
+          onClose={() => {
+            setShowCancelPromotionModal(false);
+            setTargetAccount(null);
+          }}
+          onConfirm={confirmCancelPromotion}
+          title={t('account.promotion.cancel.title') || 'ยกเลิกการโปรโมท'}
+          description={t('account.promotion.cancel.description') || 'คุณแน่ใจหรือว่าต้องการยกเลิกการโปรโมทบัญชีนี้?'}
+          confirmText={t('common.confirm') || 'ยืนยัน'}
+          cancelText={t('common.cancel') || 'ยกเลิก'}
+          variant="default"
+        />
+
+        <ConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => {
+            setShowDeleteModal(false);
+            setTargetAccount(null);
+          }}
+          onConfirm={confirmDeleteAccount}
+          title={t('account.delete.title') || 'ลบบัญชี'}
+          description={t('account.delete.description') || 'คุณแน่ใจหรือว่าต้องการลบบัญชีนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้'}
+          confirmText={t('common.delete') || 'ลบ'}
+          cancelText={t('common.cancel') || 'ยกเลิก'}
+          variant="destructive"
         />
       </div>
     </div>

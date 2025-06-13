@@ -240,7 +240,50 @@ const translations = {
     
     // 404
     '404.title': 'ขออภัย! ไม่พบหน้าที่คุณต้องการ',
-    '404.back': 'กลับสู่หน้าแรก'
+    '404.back': 'กลับสู่หน้าแรก',
+
+    // Chat
+    'chat.title.organizer': 'ติดต่อผู้ดูแลระบบ (ผู้จัดการ)',
+    'chat.title.admin': 'ระบบแชทผู้ดูแลระบบ',
+    'chat.title.general': 'ติดต่อผู้ดูแลระบบ',
+    'chat.description.organizer': 'ส่งข้อความถึงผู้ดูแลระบบเกี่ยวกับการจัดการบัญชี LINE OA',
+    'chat.description.admin': 'ระบบแชทสำหรับผู้ดูแลระบบ',
+    'chat.description.general': 'ส่งข้อความถึงผู้ดูแลระบบเพื่อขอความช่วยเหลือ',
+    'chat.no.messages': 'ยังไม่มีข้อความ',
+    'chat.message.placeholder': 'พิมพ์ข้อความของคุณที่นี่...',
+    'chat.send.button': 'ส่งข้อความ',
+    'chat.response.time': 'ผู้ดูแลระบบจะตอบกลับภายใน 24 ชั่วโมง',
+
+    // Account Management
+    'account.edit.title': 'แก้ไขข้อมูลบัญชี',
+    'account.edit.name': 'ชื่อบัญชี',
+    'account.edit.lineId': 'LINE ID',
+    'account.edit.description': 'คำอธิบาย',
+    'account.edit.category': 'หมวดหมู่',
+    'account.edit.image': 'รูปภาพ URL',
+    'account.edit.qrCode': 'QR Code URL',
+    'account.edit.followers': 'จำนวนผู้ติดตาม',
+    'account.edit.address': 'ที่อยู่',
+    'account.edit.latitude': 'ละติจูด',
+    'account.edit.longitude': 'ลองติจูด',
+    'account.edit.tags': 'แท็ก (คั่นด้วยเครื่องหมายจุลภาค)',
+    'account.delete.title': 'ลบบัญชี',
+    'account.delete.description': 'คุณแน่ใจหรือว่าต้องการลบบัญชีนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้',
+    'account.delete.promoted.error': 'ไม่สามารถลบบัญชีที่กำลังโปรโมทได้',
+    'account.delete.promoted.description': 'กรุณายกเลิกการโปรโมทก่อนลบบัญชี',
+    'account.delete.success': 'ลบบัญชีสำเร็จ',
+    'account.promotion.cancel.title': 'ยกเลิกการโปรโมท',
+    'account.promotion.cancel.description': 'คุณแน่ใจหรือว่าต้องการยกเลิกการโปรโมทบัญชีนี้?',
+    'account.promotion.cancel.success': 'ยกเลิกการโปรโมทสำเร็จ',
+
+    // Common
+    'common.edit': 'แก้ไข',
+    'common.delete': 'ลบ',
+    'common.cancel': 'ยกเลิก',
+    'common.confirm': 'ยืนยัน',
+    'common.save': 'บันทึก',
+    'common.success': 'สำเร็จ',
+    'common.error': 'เกิดข้อผิดพลาด',
   },
   en: {
     // Header
@@ -473,7 +516,50 @@ const translations = {
     
     // 404
     '404.title': 'Sorry! Page not found',
-    '404.back': 'Back to Home'
+    '404.back': 'Back to Home',
+
+    // Chat
+    'chat.title.organizer': 'Contact System Admin (Organizer)',
+    'chat.title.admin': 'Admin Chat System',
+    'chat.title.general': 'Contact System Admin',
+    'chat.description.organizer': 'Send messages to system admin about LINE OA account management',
+    'chat.description.admin': 'Chat system for system administrators',
+    'chat.description.general': 'Send messages to system admin for assistance',
+    'chat.no.messages': 'No messages yet',
+    'chat.message.placeholder': 'Type your message here...',
+    'chat.send.button': 'Send Message',
+    'chat.response.time': 'System admin will respond within 24 hours',
+
+    // Account Management
+    'account.edit.title': 'Edit Account Information',
+    'account.edit.name': 'Account Name',
+    'account.edit.lineId': 'LINE ID',
+    'account.edit.description': 'Description',
+    'account.edit.category': 'Category',
+    'account.edit.image': 'Image URL',
+    'account.edit.qrCode': 'QR Code URL',
+    'account.edit.followers': 'Followers Count',
+    'account.edit.address': 'Address',
+    'account.edit.latitude': 'Latitude',
+    'account.edit.longitude': 'Longitude',
+    'account.edit.tags': 'Tags (comma separated)',
+    'account.delete.title': 'Delete Account',
+    'account.delete.description': 'Are you sure you want to delete this account? This action cannot be undone.',
+    'account.delete.promoted.error': 'Cannot delete promoted account',
+    'account.delete.promoted.description': 'Please cancel promotion before deleting the account',
+    'account.delete.success': 'Account deleted successfully',
+    'account.promotion.cancel.title': 'Cancel Promotion',
+    'account.promotion.cancel.description': 'Are you sure you want to cancel the promotion for this account?',
+    'account.promotion.cancel.success': 'Promotion cancelled successfully',
+
+    // Common
+    'common.edit': 'Edit',
+    'common.delete': 'Delete',
+    'common.cancel': 'Cancel',
+    'common.confirm': 'Confirm',
+    'common.save': 'Save',
+    'common.success': 'Success',
+    'common.error': 'Error',
   },
   jp: {
     // Header
@@ -706,7 +792,50 @@ const translations = {
     
     // 404
     '404.title': '申し訳ございません！ページが見つかりません',
-    '404.back': 'ホームに戻る'
+    '404.back': 'ホームに戻る',
+
+    // Chat
+    'chat.title.organizer': 'システム管理者へ連絡 (オーガナイザー)',
+    'chat.title.admin': '管理者チャットシステム',
+    'chat.title.general': 'システム管理者へ連絡',
+    'chat.description.organizer': 'LINE OAアカウント管理についてシステム管理者にメッセージを送信',
+    'chat.description.admin': 'システム管理者用チャットシステム',
+    'chat.description.general': 'サポートのためにシステム管理者にメッセージを送信',
+    'chat.no.messages': 'まだメッセージがありません',
+    'chat.message.placeholder': 'ここにメッセージを入力してください...',
+    'chat.send.button': 'メッセージを送信',
+    'chat.response.time': 'システム管理者は24時間以内に返信します',
+
+    // Account Management
+    'account.edit.title': 'アカウント情報を編集',
+    'account.edit.name': 'アカウント名',
+    'account.edit.lineId': 'LINE ID',
+    'account.edit.description': '説明',
+    'account.edit.category': 'カテゴリ',
+    'account.edit.image': '画像URL',
+    'account.edit.qrCode': 'QRコードURL',
+    'account.edit.followers': 'フォロワー数',
+    'account.edit.address': '住所',
+    'account.edit.latitude': '緯度',
+    'account.edit.longitude': '経度',
+    'account.edit.tags': 'タグ (カンマ区切り)',
+    'account.delete.title': 'アカウントを削除',
+    'account.delete.description': 'このアカウントを削除してもよろしいですか？この操作は元に戻せません。',
+    'account.delete.promoted.error': 'プロモーション中のアカウントは削除できません',
+    'account.delete.promoted.description': 'アカウントを削除する前にプロモーションをキャンセルしてください',
+    'account.delete.success': 'アカウントが正常に削除されました',
+    'account.promotion.cancel.title': 'プロモーションをキャンセル',
+    'account.promotion.cancel.description': 'このアカウントのプロモーションをキャンセルしてもよろしいですか？',
+    'account.promotion.cancel.success': 'プロモーションが正常にキャンセルされました',
+
+    // Common
+    'common.edit': '編集',
+    'common.delete': '削除',
+    'common.cancel': 'キャンセル',
+    'common.confirm': '確認',
+    'common.save': '保存',
+    'common.success': '成功',
+    'common.error': 'エラー',
   }
 };
 
