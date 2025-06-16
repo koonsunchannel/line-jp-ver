@@ -4,11 +4,13 @@ import { useLanguage } from '../context/LanguageContext';
 import { AccountRegistrationForm } from '../components/AccountRegistrationForm';
 import { AccountEditForm } from '../components/AccountEditForm';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { LineOAVerificationForm } from '../components/LineOAVerificationForm';
+import { VerificationStatusBadge } from '../components/VerificationStatusBadge';
 import { mockAccounts, promotionPackages, mockTransactions } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle, Edit, Trash2 } from 'lucide-react';
+import { Eye, UserPlus, Users, Star, TrendingUp, Package, CreditCard, Download, Plus, XCircle, Edit, Trash2, Shield } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useToast } from '@/hooks/use-toast';
 import { LineOAAccount } from '../types';
@@ -25,6 +27,8 @@ export function OrganizerDashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetAccount, setTargetAccount] = useState<LineOAAccount | null>(null);
   const [myAccounts, setMyAccounts] = useState(mockAccounts.filter(account => account.ownerId === user?.id));
+  const [showVerificationForm, setShowVerificationForm] = useState(false);
+  const [verificationAccountName, setVerificationAccountName] = useState('');
 
   if (!user || user.type !== 'organizer') {
     return (
@@ -158,6 +162,11 @@ export function OrganizerDashboard() {
       title: "申請を送信しました",
       description: "LINE OA登録申請が正常に送信されました。",
     });
+  };
+
+  const handleVerifyAccount = (account: LineOAAccount) => {
+    setVerificationAccountName(account.name);
+    setShowVerificationForm(true);
   };
 
   return (
@@ -306,7 +315,10 @@ export function OrganizerDashboard() {
                       className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover"
                     />
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-base">{account.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-gray-900 text-sm md:text-base">{account.name}</h3>
+                        <VerificationStatusBadge isVerified={account.verificationStatus === 'approved'} />
+                      </div>
                       <p className="text-xs md:text-sm text-gray-600">{account.category}</p>
                     </div>
                   </div>
@@ -342,6 +354,14 @@ export function OrganizerDashboard() {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button 
+                        onClick={() => handleVerifyAccount(account)}
+                        className="bg-green-500 hover:bg-green-600 text-white"
+                        size="sm"
+                      >
+                        <Shield className="w-4 h-4 mr-1" />
+                        {t('verification.verify') || 'ยืนยัน'}
+                      </Button>
                       <Button 
                         onClick={() => handleEditAccount(account)}
                         variant="outline"
@@ -466,6 +486,15 @@ export function OrganizerDashboard() {
           }}
           account={editingAccount}
           onSave={handleSaveAccount}
+        />
+
+        <LineOAVerificationForm
+          isOpen={showVerificationForm}
+          onClose={() => {
+            setShowVerificationForm(false);
+            setVerificationAccountName('');
+          }}
+          accountName={verificationAccountName}
         />
 
         <ConfirmationModal

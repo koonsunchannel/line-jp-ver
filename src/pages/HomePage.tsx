@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
@@ -11,15 +10,36 @@ import { Badge } from '@/components/ui/badge';
 import { Sparkles, TrendingUp, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 export function HomePage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [shuffledPromotedAccounts, setShuffledPromotedAccounts] = useState<LineOAAccount[]>([]);
-  const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  // Redirect admin and organizer users to their dashboards
+  useEffect(() => {
+    if (user) {
+      if (user.type === 'admin') {
+        navigate('/admin');
+        return;
+      }
+      if (user.type === 'organizer') {
+        navigate('/organizer');
+        return;
+      }
+    }
+  }, [user, navigate]);
+
+  // Don't render the homepage content if user is admin or organizer
+  if (user && (user.type === 'admin' || user.type === 'organizer')) {
+    return null;
+  }
 
   const approvedAccounts = mockAccounts.filter(account => account.verificationStatus === 'approved');
   

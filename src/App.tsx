@@ -8,6 +8,7 @@ import { Layout } from "./components/Layout";
 import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { ChatProvider } from "./context/ChatContext";
+import { VerificationProvider } from "./context/VerificationContext";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -16,6 +17,7 @@ import { AccountDetailPage } from "./pages/AccountDetailPage";
 import { OrganizerDashboard } from "./pages/OrganizerDashboard";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { AdminChatPage } from "./pages/AdminChatPage";
+import { AdminVerificationPage } from "./pages/AdminVerificationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,23 +29,26 @@ const App = () => (
       <Sonner />
       <LanguageProvider>
         <AuthProvider>
-          <ChatProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<HomePage />} />
-                  <Route path="profile" element={<ProfilePage />} />
-                  <Route path="favorites" element={<FavoritesPage />} />
-                  <Route path="account/:id" element={<AccountDetailPage />} />
-                  <Route path="organizer" element={<OrganizerDashboard />} />
-                  <Route path="admin" element={<AdminDashboard />} />
-                  <Route path="admin/chat" element={<AdminChatPage />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </ChatProvider>
+          <VerificationProvider>
+            <ChatProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<HomePage />} />
+                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="favorites" element={<FavoritesPage />} />
+                    <Route path="account/:id" element={<AccountDetailPage />} />
+                    <Route path="organizer" element={<OrganizerDashboard />} />
+                    <Route path="admin" element={<AdminDashboard />} />
+                    <Route path="admin/chat" element={<AdminChatPage />} />
+                    <Route path="admin/verification" element={<AdminVerificationPage />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </ChatProvider>
+          </VerificationProvider>
         </AuthProvider>
       </LanguageProvider>
     </TooltipProvider>

@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { Home, User, Settings, LogOut, Menu, MessageCircle } from 'lucide-react';
+import { Home, User, Settings, LogOut, Menu, MessageCircle, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -55,6 +54,10 @@ export function Layout() {
           <Link to="/admin/chat" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
             <MessageCircle className="w-5 h-5" />
             <span>ระบบแชท</span>
+          </Link>
+          <Link to="/admin/verification" className="flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors">
+            <Shield className="w-5 h-5" />
+            <span>{t('verification.admin.title') || 'ยืนยันตัวตน'}</span>
           </Link>
         </>
       )}
